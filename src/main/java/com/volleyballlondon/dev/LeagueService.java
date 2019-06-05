@@ -13,13 +13,14 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import org.json.simple.JSONObject;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.volleyballlondon.dataobject.League;
-import com.volleyballlondon.dev.dbservice.LeagueDbService;
 import com.volleyballlondon.exceptions.LeagueAlreadyExistsException;
 import com.volleyballlondon.exceptions.LeagueInvalidCharactersException;
 import com.volleyballlondon.exceptions.LeagueLengthException;
 import com.volleyballlondon.exceptions.VolleyballException;
+import com.volleyballlondon.persistence.model.League;
+import com.volleyballlondon.persistence.services.LeagueDbService;
 
 /**
  * Provides the CRUD services for a league Returns a JSON response which has two
@@ -32,6 +33,14 @@ import com.volleyballlondon.exceptions.VolleyballException;
  */
 @Path("/LeagueService")
 public class LeagueService {
+
+	public LeagueService() {
+		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+        ctx.register(LeagueDbService.class);
+        ctx.refresh();
+        System.out.println("Load context");
+        leagueDbService = (LeagueDbService) ctx.getBean("mainBean");
+	}
 
     /** JSON status property, name and values */
     public static final String C_JSON_STATUS = "status";
@@ -56,7 +65,7 @@ public class LeagueService {
     public static final String C_VALID_LEAGUE_FIRST_CHAR = "[A-Z]";
 
     /** League database service */
-    private LeagueDbService i_leagueDbService = new LeagueDbService();
+    private LeagueDbService leagueDbService;
 
     /**
      * Creates a new league on the database.
@@ -80,7 +89,7 @@ public class LeagueService {
             validateLeagueLength(p_league);
             validateLeagueCharacters(p_league);
             validateLeagueAlreadyExists(p_league);
-            i_leagueDbService.create(p_league);
+            leagueDbService.addLeague(p_league);
             l_response.put(C_JSON_STATUS, C_JSON_STATUS_SUCCESS);
             l_response.put(C_JSON_MESSAGE, C_JSON_MESSAGE_SUCCESS);
         } catch (VolleyballException l_e) {
@@ -101,9 +110,9 @@ public class LeagueService {
      *             if league name already exists
      */
     private void validateLeagueAlreadyExists(String p_league) throws LeagueAlreadyExistsException {
-        List<League> l_leagues = i_leagueDbService.read(p_league);
+        List<League> l_leagues = leagueDbService.findByNameIgnoreCase(p_league);
         if (!l_leagues.isEmpty()) {
-            throw new LeagueAlreadyExistsException(l_leagues.get(0).getLeagueName());
+            throw new LeagueAlreadyExistsException(l_leagues.get(0).getName());
         }
     }
 

@@ -1,3 +1,4 @@
+/* Add the war and gretty plugins */
 plugins {
     id 'war'
     id 'org.gretty' version '2.2.0'
@@ -25,11 +26,37 @@ repositories {
 }
 
 dependencies {
-    compile "org.springframework:spring-jdbc:$springVersion",
+           compile "org.springframework:spring-core:$springVersion",
                    "org.springframework:spring-context:$springVersion",
+                   "org.springframework.data:spring-data-jpa:2.1.6.RELEASE",
+                   "org.hibernate:hibernate-entitymanager:5.4.2.Final",
+                   "javax.servlet:servlet-api:2.5",
                    "org.glassfish.jersey.containers:jersey-container-servlet:$jerseyVersion",
                    "org.glassfish.jersey.inject:jersey-hk2:$jerseyVersion",
                    "jakarta.servlet:jakarta.servlet-api:4.0.2",
                    "com.googlecode.json-simple:json-simple:1.1.1",
-                   "mysql:mysql-connector-java:5.1.13"
+                   "org.postgresql:postgresql:42.2.5"
 }
+
+task testSetupDB(type: Exec) {
+   def dbPassword = project.properties['dbPassword']
+   def dbUsername = project.properties['dbUsername']
+   def dbHostname = project.properties['dbHostname']
+   def dbPort = project.properties['dbPort']
+   def postgresQLbinDir = project.properties['postgresQLbinDir']
+   def sqlFileScript = "$project.projectDir/database/InitVolleyballTest.sql"
+   String psqlCommandLine = "psql -h $dbHostname -U $dbUsername -p $dbPort -f $sqlFileScript"
+   
+   environment 'PGPASSWORD', dbPassword
+   workingDir postgresQLbinDir
+   commandLine 'cmd', '/c', psqlCommandLine
+}
+
+task copyPropertiesFile(type: Copy) {
+    from file("$project.projectDir/gradle.properties")
+    into file("$project.projectDir/src/main/resources")
+    rename('gradle.properties', 'application.properties')
+}
+
+test.dependsOn testSetupDB
+processResources.dependsOn copyPropertiesFile

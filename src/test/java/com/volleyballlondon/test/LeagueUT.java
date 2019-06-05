@@ -1,5 +1,7 @@
 package com.volleyballlondon.test;
 
+import java.util.List;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -9,13 +11,14 @@ import javax.ws.rs.core.MediaType;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.volleyballlondon.dataobject.League;
 import com.volleyballlondon.dev.LeagueService;
-import com.volleyballlondon.dev.dbservice.LeagueDbService;
 import com.volleyballlondon.exceptions.LeagueAlreadyExistsException;
 import com.volleyballlondon.exceptions.LeagueInvalidCharactersException;
 import com.volleyballlondon.exceptions.LeagueLengthException;
+import com.volleyballlondon.persistence.model.League;
+import com.volleyballlondon.persistence.services.LeagueDbService;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -57,10 +60,14 @@ public class LeagueUT extends TestCase
 
     {
         c_client = ClientBuilder.newClient();
-        c_leagueDbService = new LeagueDbService();
+		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+        ctx.register(LeagueDbService.class);
+        ctx.refresh();
+        System.out.println("Load context");
+        leagueDbService = (LeagueDbService) ctx.getBean("mainBean");
     }
     
-    private static LeagueDbService c_leagueDbService;
+    private static LeagueDbService leagueDbService;
     
     /** Standard constructor.
      * @param p_name Name of test.
@@ -80,7 +87,7 @@ public class LeagueUT extends TestCase
      */
     public void test01NewLeague()
     {
-        int l_leagueCount = readLeagueCount();
+        long l_leagueCount = readLeagueCount();
         String l_newLeague = "Division 01";
         String l_jsonResponse = create(l_newLeague);
 
@@ -103,7 +110,7 @@ public class LeagueUT extends TestCase
      */
     public void test02NewLeagueAllCharacters()
     {
-        int l_leagueCount = readLeagueCount();
+        long l_leagueCount = readLeagueCount();
         String l_newLeague = "Men's Division 02 - (North)";
         String l_jsonResponse = create(l_newLeague);
 
@@ -124,7 +131,7 @@ public class LeagueUT extends TestCase
      */
     public void test03LeagueAlreadyExists()
     {
-        int l_leagueCount = readLeagueCount();
+        long l_leagueCount = readLeagueCount();
         String l_originalLeague = "Men's Division 03 - (South)";
         String l_newLeague = "Men's DIVISION 03 - (SOUTH)";
         String l_jsonResponse = create(l_newLeague);
@@ -146,7 +153,7 @@ public class LeagueUT extends TestCase
      */
     public void test04NewLeagueInvalidCharacters()
     {
-        int l_leagueCount = readLeagueCount();
+        long l_leagueCount = readLeagueCount();
         String l_newLeague = "Men's Division 04; - (North)";
         String l_jsonResponse = create(l_newLeague);
         assertJsonResponse(LeagueService.C_JSON_STATUS_FAILURE,
@@ -164,7 +171,7 @@ public class LeagueUT extends TestCase
      */
     public void test05EmptyString()
     {
-        int l_leagueCount = readLeagueCount();
+        long l_leagueCount = readLeagueCount();
         String l_newLeague = C_EMPTY_STRING;
         String l_jsonResponse = create(l_newLeague);
         assertJsonResponse(LeagueService.C_JSON_STATUS_FAILURE,
@@ -185,7 +192,7 @@ public class LeagueUT extends TestCase
      */
     public void test06NewLeagueTooLong()
     {
-        int l_leagueCount = readLeagueCount();
+        long l_leagueCount = readLeagueCount();
         String l_newLeague = "Men's Division 06 - (North - South)";
         String l_jsonResponse = create(l_newLeague);
         assertJsonResponse(LeagueService.C_JSON_STATUS_FAILURE,
@@ -205,7 +212,7 @@ public class LeagueUT extends TestCase
      */
     public void test07NewLeagueNoUppercaseCharacter()
     {
-        int l_leagueCount = readLeagueCount();
+        long l_leagueCount = readLeagueCount();
         String l_newLeague = "men's Division 07";
         String l_jsonResponse = create(l_newLeague);
         assertJsonResponse(LeagueService.C_JSON_STATUS_FAILURE,
@@ -248,8 +255,8 @@ public class LeagueUT extends TestCase
     /**
      * Asserts the expected league count on the database
      */
-    private void assertLeagueCount(int p_expectedLeagueCount) {
-        int l_actualLeagueCount = readLeagueCount();
+    private void assertLeagueCount(long p_expectedLeagueCount) {
+        long l_actualLeagueCount = readLeagueCount();
         assertEquals("Incorrect League Count", p_expectedLeagueCount,
             l_actualLeagueCount);
     }
@@ -259,9 +266,13 @@ public class LeagueUT extends TestCase
      * database
      */
     private void assertNewLeague(String l_expectedLeagueName) {
-        League l_actualLeague = c_leagueDbService.readNewLeague();
+        League l_actualLeague = leagueDbService.findFirstByIdOrderByIdDesc();
+
+        if (l_actualLeague == null) {
+           fail("League " + l_expectedLeagueName + " not created");
+        }
         assertEquals("League not created", l_expectedLeagueName,
-            l_actualLeague.getLeagueName());
+            l_actualLeague.getName());
     }
 
     /**
@@ -290,8 +301,8 @@ public class LeagueUT extends TestCase
           return l_response;
     }
 
-  private int readLeagueCount() {
-    return c_leagueDbService.readLeagueCount();
+  private long readLeagueCount() {
+    return leagueDbService.count();
 }
 
     /**This method is used to setup anything required by each test. */
