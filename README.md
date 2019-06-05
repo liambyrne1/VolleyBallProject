@@ -1,15 +1,13 @@
-# VolleyBallManagement
+# VolleyBallProject
 To implement a Volleyball league system.
 
 
 
 TO RUN THE GRADLE BUILD FILE build.gradle
 
-Change to the VolleyBallManagement directory, the directory that holds build.gradle
+Change to the VolleyBallProject directory, the directory that holds build.gradle
 The parameters "--console=plain --info" give more information
-The dependencies are downloaded to the ~/.gradle/caches/modules-2/files-2.1 directory
-(38 items, 31MB)
-All artifacts are built in the the VolleyBallManagement/build directory.
+All artifacts are built in the the VolleyBallProject/build directory.
 
 
 
@@ -17,7 +15,7 @@ TO BUILD WAR FILE
 
 >gradlew war --console=plain --info
 
-VolleyBallManagement.war is created in build/libs directory
+VolleyBallLeagueSystem.war is created in build/libs directory
 
 
 
@@ -25,7 +23,7 @@ TO RUN APP
 
 >gradlew appRun --console=plain --info
 
-Access web app at http://localhost:8080/VolleyBallManagement/createleague.html
+Access web app at http://localhost:8080/VolleyBallLeagueSystem/createleague.html
 
 
 
