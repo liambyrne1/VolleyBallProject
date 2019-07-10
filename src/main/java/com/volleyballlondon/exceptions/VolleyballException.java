@@ -6,18 +6,18 @@ package com.volleyballlondon.exceptions;
 public class VolleyballException extends Exception {
 
     /** Error message in exception */
-	private String i_message;
+	private String message;
 
-    public VolleyballException(String p_message)
+    public VolleyballException(String message)
     {
-        i_message = p_message;
+        this.message = message;
     }
 
 	public String getMessage() {
-		return i_message;
+		return message;
 	}
 
 	public void printErrorMessage() {
-		System.out.println("VolleyballException: " + i_message);
+		System.out.println("VolleyballException: " + message);
 	}
 }

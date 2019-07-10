@@ -5,15 +5,15 @@ package com.volleyballlondon.exceptions;
  */
 public class LeagueAlreadyExistsException extends VolleyballException {
 
-    public static final String C_ERROR_MESSAGE = " already exists.";
+    public static final String ERROR_MESSAGE = " already exists.";
 
     /**
      * Creates the error message in the exception
-     * @param p_message The league name already on the database.
+     * @param message The league name already on the database.
      * This could have different case letters. Must be displayed to user
     */
-    public LeagueAlreadyExistsException(String p_message) {
-        super(p_message + C_ERROR_MESSAGE);
+    public LeagueAlreadyExistsException(String message) {
+        super(message + ERROR_MESSAGE);
     }
 
 }

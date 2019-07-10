@@ -7,12 +7,12 @@ package com.volleyballlondon.exceptions;
  */
 public class LeagueInvalidCharactersException extends VolleyballException {
 
-    public static final String C_ERROR_MESSAGE = "Name contains Invalid Characters";
+    public static final String ERROR_MESSAGE = "Name contains Invalid Characters";
 
     /**
      * Creates the error message in the exception
      */
     public LeagueInvalidCharactersException() {
-        super(C_ERROR_MESSAGE);
+        super(ERROR_MESSAGE);
     }
 }

@@ -7,16 +7,17 @@ package com.volleyballlondon.exceptions;
 public class LeagueLengthException extends VolleyballException {
 
     /** Maximum length of a league name */
-    public static final int C_MAX_LEAGUE_LENGTH = 30;
+    public static final int MAX_LEAGUE_LENGTH = 30;
 
-    public static final String C_ERROR_MESSAGE =
-        "League can only be " + C_MAX_LEAGUE_LENGTH + " characters or less," +
+    public static final String ERROR_MESSAGE =
+        "League can only be " + MAX_LEAGUE_LENGTH + " characters or less," +
         " input is ";
 
     /**
      * Creates the error message in the exception
+     * @param leagueLength the invalid length
      */
-    public LeagueLengthException(int p_leagueLength) {
-        super(C_ERROR_MESSAGE + p_leagueLength + ".");
+    public LeagueLengthException(int leagueLength) {
+        super(ERROR_MESSAGE + leagueLength + ".");
     }
 }
