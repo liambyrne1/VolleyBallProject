@@ -167,3 +167,13 @@ function serverSuccess(response, textStatus, jQxhr){
         $("#errorMessage1").text(response.message).css("color", "red").show();
     }
 }
+
+/**
+ * Object to expose functions to test service.
+ */
+var testFunctions = {};
+
+testFunctions.validateLeagueName = validateLeagueName;
+testFunctions.displayError = displayError;
+testFunctions.submitForm = submitForm;
+module.exports = testFunctions;

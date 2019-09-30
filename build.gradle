@@ -6,6 +6,13 @@ plugins {
 
 project.webAppDirName = 'WebContent'
 
+/* Exclude the Mocha files from the war package. */
+war {
+    exclude 'node_modules'
+    exclude 'package-lock.json'
+    exclude 'test'
+}
+
 /* Use Jetty version 9.4,
    There is a bug using Jetty 9.0, default version
    Start and stop Jetty server around "test" task
@@ -52,6 +59,19 @@ task testSetupDB(type: Exec) {
    commandLine 'cmd', '/c', psqlCommandLine
 }
 
+/**
+ * This project requires two property files, although they are both identical.
+ * gradle.properties which is the default property file for the gradle, stored in the
+ *      gradle project directory.
+ * application.properties which is the default property file for Spring Data, stored
+ *      in the src/main/resources directory and copied to the war file.
+ * Therefore instead of maintaining two property files, the user is always asked to
+ * update gradle.properties, and this file is always copied to
+ * src/main/resources/application.properties when a build takes place.
+ *
+ * Note this task is always performed before a processResources task, therefore it is
+ * always performed before a war, test or appRun task.
+ */
 task copyPropertiesFile(type: Copy) {
     from file("$project.projectDir/gradle.properties")
     into file("$project.projectDir/src/main/resources")

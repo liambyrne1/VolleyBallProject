@@ -6,3 +6,9 @@ build
 
 # Ignore the bin directory
 bin
+
+# Ignore the WebContent\node_modules directory
+WebContent/node_modules
+
+# Ignore the package-lock.json file
+WebContent/package-lock.json
