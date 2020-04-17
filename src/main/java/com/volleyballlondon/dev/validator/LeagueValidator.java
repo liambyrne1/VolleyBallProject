@@ -31,13 +31,25 @@ public class LeagueValidator {
     public static final String VALID_LEAGUE_FIRST_CHAR = "[A-Z]";
 
     /**
-     * Validates a new league name
+     * Validates a new league name for a create request.
      * @param newLeague name to be validated
      */
-    public void validateLeagueName(String newLeague) throws VolleyballException {
+    public void validateLeagueNameCreate(String newLeague) throws VolleyballException {
         validateLeagueLength(newLeague);
         validateLeagueCharacters(newLeague);
         validateLeagueAlreadyExists(newLeague);
+    }
+
+    /**
+     * Validates a league name for a update request. Do not check if league already
+     * exists. User is allowed to change the case of the name.
+     * @param leagueId 
+     * @param newLeague name to be validated
+     */
+    public void validateLeagueNameUpdate(int leagueId, String newLeague) throws VolleyballException {
+        validateLeagueLength(newLeague);
+        validateLeagueCharacters(newLeague);
+        validateLeagueAlreadyExists(leagueId, newLeague);
     }
 
     /**
@@ -53,6 +65,30 @@ public class LeagueValidator {
         List<League> leagues = leagueDbService.findByNameIgnoreCase(newLeague);
         if (!leagues.isEmpty()) {
             throw new LeagueAlreadyExistsException(leagues.get(0).getName());
+        }
+    }
+
+    /**
+     * Checks if new league name already exists. Performs a case insensitive search
+     * for the league name on the database. Allows the case of the updated
+     * league name to change.
+     * 
+     * @param newLeague
+     *            - the new league name
+     * @throws LeagueAlreadyExistsException
+     *             if league name already exists
+     */
+    private void validateLeagueAlreadyExists(int leagueId, String newLeague) throws LeagueAlreadyExistsException {
+        List<League> leagues = leagueDbService.findByNameIgnoreCase(newLeague);
+        if (!leagues.isEmpty()) {
+            if (leagues.size() > 1) {
+                throw new LeagueAlreadyExistsException(leagues.get(0).getName());
+            }
+            // Only one league found.
+            // Check if it is the league being updated.
+            if (leagues.get(0).getId() != leagueId) {
+                throw new LeagueAlreadyExistsException(leagues.get(0).getName());
+            }
         }
     }
 

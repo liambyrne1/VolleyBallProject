@@ -27,18 +27,27 @@ public class LeagueDbService {
     }
 
     /**
+     * Returns all the columns of each league on the database
+     * ordered by the database default.
+     */
+	public List<League> getAllLeagues() {
+		return (List<League>) leagueRepository.findAll();
+	}
+
+    /**
+     * Returns all the columns of each league on the database
+     * ordered alphabetically by name.
+     */
+	public List<League> findByOrderByName() {
+		return (List<League>) leagueRepository.findByOrderByName();
+	}
+
+    /**
      * Finds the League that was inserted last
      */
     public League findFirstByIdOrderByIdDesc() {
         return leagueRepository.findFirstByOrderByIdDesc();
     }
-
-    /**
-     * Finds all leagues
-     */
-	public List<League> getAllLeagues() {
-		return (List<League>) leagueRepository.findAll();
-	}
 
     /**
      * Finds a League by the given name
@@ -60,6 +69,14 @@ public class LeagueDbService {
 	public Optional<League> getById(Long id) {
 		return leagueRepository.findById(id);
 	}
+
+    /**
+     * Updates the league name for a given id.
+     */
+     @Transactional
+     public int updateLeagueName(Long leagueId, String leagueName) {
+        return leagueRepository.updateLeagueName(leagueId, leagueName);
+     }
 
     /**
      * Deletes the League with the given id

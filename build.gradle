@@ -39,10 +39,13 @@ dependencies {
                    "org.hibernate:hibernate-entitymanager:5.4.2.Final",
                    "javax.servlet:servlet-api:2.5",
                    "org.glassfish.jersey.containers:jersey-container-servlet:$jerseyVersion",
+                   "org.glassfish.jersey.media:jersey-media-json-jackson:$jerseyVersion",
                    "org.glassfish.jersey.inject:jersey-hk2:$jerseyVersion",
                    "jakarta.servlet:jakarta.servlet-api:4.0.2",
                    "com.googlecode.json-simple:json-simple:1.1.1",
-                   "org.postgresql:postgresql:42.2.5"
+                   "org.postgresql:postgresql:42.2.5",
+                   "com.fasterxml.jackson.core:jackson-annotations:2.9.8"
+           testImplementation "junit:junit:4.12" 
 }
 
 task testSetupDB(type: Exec) {
@@ -78,5 +81,27 @@ task copyPropertiesFile(type: Copy) {
     rename('gradle.properties', 'application.properties')
 }
 
-test.dependsOn testSetupDB
+/**
+ * Runs the Java unit test on a Windows system.
+ * Automatically loads the database with the
+ * VolleyBallLeagueSystem\database\InitVolleyballTest.sql script.
+ * Uses the testSetupDB task, which uses the Windows 'cmd' command.
+ */
+task testOnWindows {
+}
+
+/**
+ * Runs the Java unit test on a non Windows system.
+ * The database has to be first manually loaded with the sql script
+ * VolleyBallLeagueSystem\database\InitVolleyballTest.sql
+ */
+task testNotOnWindows {
+}
+
+testOnWindows.dependsOn testSetupDB
+testOnWindows.dependsOn test
+test.mustRunAfter testSetupDB
+
+testNotOnWindows.dependsOn test
+
 processResources.dependsOn copyPropertiesFile
