@@ -33,3 +33,24 @@ INSERT INTO leagues (name) VALUES ('League 03');
 INSERT INTO leagues (name) VALUES ('League 02');
 INSERT INTO leagues (name) VALUES ('League 01');
 INSERT INTO leagues (name) VALUES ('Men''s Division 03 - (South)');
+
+-------------------------------------------------------------------------
+-- Add table "Clubs"                                                  -
+-------------------------------------------------------------------------
+
+CREATE TABLE clubs (
+    id SERIAL PRIMARY KEY NOT NULL,
+    name VARCHAR(30) NOT NULL
+);
+
+INSERT INTO clubs (name) VALUES ('Club 10');
+INSERT INTO clubs (name) VALUES ('Club 09');
+INSERT INTO clubs (name) VALUES ('Club 08');
+INSERT INTO clubs (name) VALUES ('Club 07');
+INSERT INTO clubs (name) VALUES ('Club 06');
+INSERT INTO clubs (name) VALUES ('Club 05');
+INSERT INTO clubs (name) VALUES ('Club 04');
+INSERT INTO clubs (name) VALUES ('Club 03');
+INSERT INTO clubs (name) VALUES ('Club 02');
+INSERT INTO clubs (name) VALUES ('Club 01');
+INSERT INTO clubs (name) VALUES ('Men''s Club1234 03 - (South)');

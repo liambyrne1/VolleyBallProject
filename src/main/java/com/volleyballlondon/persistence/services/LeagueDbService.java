@@ -12,7 +12,7 @@ import com.volleyballlondon.persistence.config.DataConfig;
 import com.volleyballlondon.persistence.model.League;
 import com.volleyballlondon.persistence.repository.LeagueRepository;
 
-@Configuration("mainBean")
+@Configuration("leagueDbBean")
 @Import(DataConfig.class)
 public class LeagueDbService {
 

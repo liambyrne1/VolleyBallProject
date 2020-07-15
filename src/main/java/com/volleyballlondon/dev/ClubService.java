@@ -20,13 +20,13 @@ import javax.ws.rs.core.MediaType;
 import org.json.simple.JSONObject;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.volleyballlondon.dev.validator.LeagueValidator;
+import com.volleyballlondon.dev.validator.ClubValidator;
 import com.volleyballlondon.exceptions.VolleyballException;
-import com.volleyballlondon.persistence.model.League;
-import com.volleyballlondon.persistence.services.LeagueDbService;
+import com.volleyballlondon.persistence.model.Club;
+import com.volleyballlondon.persistence.services.ClubDbService;
 
 /**
- * Provides the CRUD services for a league Returns a JSON response which has two
+ * Provides the CRUD services for a club Returns a JSON response which has two
  * properties:- status message
  *
  * The status property has the following boolean values:- true the service is
@@ -34,64 +34,64 @@ import com.volleyballlondon.persistence.services.LeagueDbService;
  *
  * The message is a string property which gives a description of the failure.
  */
-@Path("/LeagueService")
-public class LeagueService extends VolleyballService {
+@Path("/ClubService")
+public class ClubService extends VolleyballService {
 
-	public LeagueService() {
+	public ClubService() {
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-        ctx.register(LeagueDbService.class);
+        ctx.register(ClubDbService.class);
         ctx.refresh();
-        leagueDbService = (LeagueDbService) ctx.getBean("leagueDbBean");
-        leagueValidator = new LeagueValidator(leagueDbService);
+        clubDbService = (ClubDbService) ctx.getBean("clubDbBean");
+        clubValidator = new ClubValidator(clubDbService);
 	}
 
-    /** League database service */
-    private LeagueDbService leagueDbService;
+    /** Club database service */
+    private ClubDbService clubDbService;
 
-    /** League validators */
-    private LeagueValidator leagueValidator;
+    /** Club validators */
+    private ClubValidator clubValidator;
 
-    public static final String JSON_MESSAGE_SUCCESS = "New League has been created.";
+    public static final String JSON_MESSAGE_SUCCESS = "New Club has been created.";
     /**
-     * Returns all the leagues from the database in alphabetical order.
+     * Returns all the clubs from the database in alphabetical order.
      * Do not allow Eclipse to generate this test case. Remove '@'
-     * should get all leagues
+     * should get all clubs
      */
     @GET
-    @Path("/leagues")
+    @Path("/clubs")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<League> getLeagues(){
-        List<League> leagues = new ArrayList<>();
+    public List<Club> getClubs(){
+        List<Club> clubs = new ArrayList<>();
         try {
-            leagues = leagueDbService.findByOrderByName();
+            clubs = clubDbService.findByOrderByName();
         } catch (Exception e) {
             logException(e);
         }
-        return leagues;
+        return clubs;
     }
 
     /**
-     * Creates a new league on the database.
+     * Creates a new club on the database.
      * 
-     * @param newLeague
-     *            - the new league name
-     * @return returns the following responses:- success New League has been
-     *         created failure League Name contains Invalid Characters failure
-     *         League already exists failure Volleyball server is unavailable
+     * @param newClub
+     *            - the new club name
+     * @return returns the following responses:- success New Club has been
+     *         created failure Club Name contains Invalid Characters failure
+     *         Club already exists failure Volleyball server is unavailable
      *
-     * @should create new league
-     * @should create new league with all valid characters
-     * @should fail if league already exists
+     * @should create new club
+     * @should create new club with all valid characters
+     * @should fail if club already exists
      * @should fail given invalid character
      * @should fail given empty string
-     * @should fail given league name too long
+     * @should fail given club name too long
      * @should fail given not begin with uppercase
      */
     @POST
-    @Path("/leagues")
+    @Path("/clubs")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public String createLeagueByForm(@FormParam("new-league-name") String newLeague,
+    public String createClubByForm(@FormParam("new-club-name") String newClub,
         @Context HttpServletResponse servletResponse)
         throws IOException {
 
@@ -99,8 +99,8 @@ public class LeagueService extends VolleyballService {
         response.put(JSON_STATUS, JSON_STATUS_FAILURE);
 
         try {
-            leagueValidator.validateLeagueNameCreate(newLeague);
-            leagueDbService.addLeague(newLeague);
+            clubValidator.validateClubNameCreate(newClub);
+            clubDbService.addClub(newClub);
             response.put(JSON_STATUS, JSON_STATUS_SUCCESS);
             response.put(JSON_MESSAGE, JSON_MESSAGE_SUCCESS);
         } catch (VolleyballException e) {
@@ -113,41 +113,40 @@ public class LeagueService extends VolleyballService {
     }
 
     /**
-     * Updates an existing league on the database. Allow user to change
-     * the case of the league name being updated.
+     * Updates an existing club on the database. Allow user to change
+     * the case of the club name being updated.
      * 
-     * @param leagueId Id of the league that is being updated.
-     * @param newLeagueName
-     *            - the new league name
-     * @return returns the following responses:- success New League has been
-     *         updated failure League Name contains Invalid Characters failure
-     *         League already exists failure Volleyball server is unavailable
+     * @param clubId Id of the club that is being updated.
+     * @param newClubName
+     *            - the new club name
+     * @return returns the following responses:- success New Club has been
+     *         updated failure Club Name contains Invalid Characters failure
+     *         Club already exists failure Volleyball server is unavailable
      *
-     * @should update league
-     * @should update league with all valid characters
-     * @should update league with different case
-     * @should not update if league already exists
+     * @should update club
+     * @should update club with all valid characters
+     * @should update club with different case
+     * @should not update if club already exists
      * @should not update given invalid character
      * @should not update given empty string
-     * @should not update given league name too long
+     * @should not update given club name too long
      * @should not update given not begin with uppercase
      */
     @PUT
-    @Path("/leagues")
+    @Path("/clubs")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public String updateLeagueByForm(@FormParam("league-id") int leagueId,
-        @FormParam("new-league-name") String newLeagueName,
+    public String updateClubByForm(@FormParam("club-id") int clubId,
+        @FormParam("new-club-name") String newClubName,
         @Context HttpServletResponse servletResponse)
         throws IOException {
 
-        System.out.println("Entering updateLeagueByForm");
         JSONObject response = new JSONObject();
         response.put(JSON_STATUS, JSON_STATUS_FAILURE);
 
         try {
-            leagueValidator.validateLeagueNameUpdate(leagueId, newLeagueName);
-            leagueDbService.updateLeagueName((long) leagueId, newLeagueName);
+            clubValidator.validateClubNameUpdate(clubId, newClubName);
+            clubDbService.updateClubName((long) clubId, newClubName);
             response.put(JSON_STATUS, JSON_STATUS_SUCCESS);
             response.put(JSON_MESSAGE, JSON_MESSAGE_SUCCESS);
         } catch (VolleyballException e) {
@@ -160,22 +159,22 @@ public class LeagueService extends VolleyballService {
     }
 
     /**
-     * Deletes an existing league on the database.
+     * Deletes an existing club on the database.
      * 
-     * @param leagueId Id of the league that is being deleted.
+     * @param clubId Id of the club that is being deleted.
      *
-     * @return returns the following responses:- success League has been deleted
+     * @return returns the following responses:- success Club has been deleted
      *         failure Volleyball server is unavailable
      *
-     * @should delete league
+     * @should delete club
      */    
     @DELETE
-    @Path("/leagues/{leagueid}")
+    @Path("/clubs/{clubid}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String deleteLeague(@PathParam("leagueid") long leagueId){
+    public String deleteClub(@PathParam("clubid") long clubId){
         JSONObject response = new JSONObject();
         try {
-            leagueDbService.deleteLeague(leagueId);
+            clubDbService.deleteClub(clubId);
             response.put(JSON_STATUS, JSON_STATUS_SUCCESS);
             response.put(JSON_MESSAGE, JSON_MESSAGE_SUCCESS);
         } catch (Exception e) {
@@ -186,5 +185,4 @@ public class LeagueService extends VolleyballService {
 
         return response.toString();
     }
-
 }

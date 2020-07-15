@@ -1,11 +1,6 @@
 "use strict";
 
 /**
- * Holds the current status of the user input.
- */
-var validInput = false;
-
-/**
  * Common message displayed when server is unable to respond.
  */
 var serverUnavailabeMessage = 'Volleyball System is unavailable';
@@ -226,8 +221,8 @@ function createDeleteButtonCellElement() {
 function openCreateLeagueDialog() {
     clearMaintainMessage();
     dialogElement = document.getElementById('dialog-create-league');
-    // access openDialog via testFunctions to allow 'mocha' to stub it out.
-    testFunctions.openDialog(dialogElement);
+    // access openDialog via leagueExports to allow 'mocha' to stub it out.
+    leagueExports.openDialog(dialogElement);
     dialogElement.getElementsByClassName('dialog-input')[0].value = '';
 }
 
@@ -239,9 +234,12 @@ function openCreateLeagueDialog() {
 function createLeagueOnServer(event) {
     event.preventDefault();
 
+    console.log('Runing createLeagueOnServer');
     let inputField = dialogElement.getElementsByClassName('dialog-input')[0];
     let inputName = inputField.value;
+    console.log('validInput = ' + validInput);
     if (validInput) {
+        console.log('About to call submitToServer');
         let url = 'rest/LeagueService/leagues';
         let type = 'POST';
         let form = event.data.form;
@@ -297,8 +295,8 @@ function updateLeague(buttonElement) {
  */
 function openUpdateLeagueDialog(leagueId, oldLeagueName) {
     dialogElement = document.getElementById('dialog-update-league');
-    // access openDialog via testFunctions to allow 'mocha' to stub it out.
-    testFunctions.openDialog(dialogElement);
+    // access openDialog via leagueExports to allow 'mocha' to stub it out.
+    leagueExports.openDialog(dialogElement);
 
     dialogElement.getElementsByClassName('dialog-input')[0].value = '';
     dialogElement.getElementsByClassName('dialog-old-name')[0].innerHTML = oldLeagueName;
@@ -412,8 +410,8 @@ function getDeleteScrollPosition(deleteElementRow) {
  */
 function openDeleteLeagueDialog(leagueId, deleteLeagueName, newScrollPosition) {
     dialogElement = document.getElementById('dialog-delete-league');
-    // access openDialog via testFunctions to allow 'mocha' to stub it out.
-    testFunctions.openDialog(dialogElement);
+    // access openDialog via leagueExports to allow 'mocha' to stub it out.
+    leagueExports.openDialog(dialogElement);
 
     var spanElement = dialogElement.getElementsByClassName('dialog-object-name')[0];
     spanElement.setAttribute('data-league-id', leagueId);
@@ -459,18 +457,7 @@ function serverSuccessDelete(result, status, xhr, deleteLeagueName, newScrollPos
     displayMaintainMessage(message);
 }
 
-/* Validation Input Field Code Section. */
-
-/**
- * Bound to the oninput event on the league input field on each dialog.
- * Ignores empty input, i.e. the empty string
- */
-function validateLeagueInput(league){
-    initialiseDialog();
-    if (league != "") {
-        validInput = validateLeagueName(league);
-    }
-}
+/* Error Display Code Section. */
 
 /**
  * Initialises boolean fields and error messages
@@ -481,74 +468,6 @@ function initialiseDialog() {
     dialogElement.getElementsByClassName('dialog-message-2')[0].innerHTML = '';
     dialogElement.getElementsByClassName('dialog-message-3')[0].innerHTML = '';
 }
-
-/**
- * Validates the length of the league name and its characters
- */
-function validateLeagueName(league) {
-    var validLeagueReturn = true;
-
-    if (league.length > 30) {
-        displayLeagueLengthError(league)
-        validLeagueReturn = false;
-    }
-
-    if (!validateLeagueFirstChar(league)) {
-        validLeagueReturn = false;
-    }
-
-    if (!validateLeagueAllChars(league)) {
-        validLeagueReturn = false;
-    }
-    return validLeagueReturn;
-}
-
-/**
- * Display a league length error message
- */
-function displayLeagueLengthError(league) {
-    var errorMessage = "League can only be 30 characters or less," +
-        " input is " + league.length + ".";
-    displayError(errorMessage);
-}
-
-/**
- * Validates the first character of a league name
- * The first character must be an uppercase letter
- * If it is not an uppercase letter, an error is displayed
- */
-function validateLeagueFirstChar(league) {
-    var errorMessage = "League must start with a capital letter.";
-    var firstChar = league.substr(0, 1);
-    var index = firstChar.search(/[A-Z]/);
-    var validLeagueReturn = true;
-
-    if (index != 0) {
-        displayError(errorMessage);
-        validLeagueReturn = false;
-    }
-    return validLeagueReturn;
-}
-    
-/**
- * Validates all the characters of a league name, even the first character.
- * If the first character is invalid, two error messages are displayed
- * Valid characters are upper/lower case letters, numbers, spaces,
- * apostrophes, brackets and dashes.
- */
-function validateLeagueAllChars(league) {
-    var errorMessage = "Only letters, numbers, spaces, apostrophes, brackets and dashes allowed.";
-    var index = league.search(/[^a-zA-Z0-9 '()-]/);
-    var validLeagueReturn = true;
-
-    if (index != -1) {
-        displayError(errorMessage);
-        validLeagueReturn = false;
-    }
-    return validLeagueReturn;
-}
-
-/* Error Display Code Section. */
 
 /**
  * displays an error message in the next available error position on the dialog.
@@ -700,22 +619,21 @@ function serverFailure(jqXhr, textStatus, errorThrown){
     }
 
 /**
- * Object to expose functions to test service.
+ * Object to expose variables/functions to test service.
  */
-var testFunctions = {};
+var leagueExports = {};
 
-testFunctions.setUpDialogButtons = setUpDialogButtons;
-testFunctions.setUpDeleteDialogButtons = setUpDeleteDialogButtons;
-testFunctions.validateLeagueInput = validateLeagueInput;
-testFunctions.validateLeagueName = validateLeagueName;
-testFunctions.displayError = displayError;
-testFunctions.openCreateLeagueDialog = openCreateLeagueDialog;
-testFunctions.createLeagueOnServer = createLeagueOnServer;
-testFunctions.openDialog = openDialog;
-testFunctions.getLeaguesFromServer = getLeaguesFromServer;
-testFunctions.displayLeaguesInTable = displayLeaguesInTable;
-testFunctions.displayLeagues = displayLeagues;
-testFunctions.updateLeague = updateLeague;
-testFunctions.updateLeagueOnServer = updateLeagueOnServer;
-testFunctions.deleteLeague = deleteLeague;
-module.exports = testFunctions;
+leagueExports.setUpDialogButtons = setUpDialogButtons;
+leagueExports.setUpDeleteDialogButtons = setUpDeleteDialogButtons;
+leagueExports.displayError = displayError;
+leagueExports.openCreateLeagueDialog = openCreateLeagueDialog;
+leagueExports.createLeagueOnServer = createLeagueOnServer;
+leagueExports.openDialog = openDialog;
+leagueExports.initialiseDialog = initialiseDialog;
+leagueExports.getLeaguesFromServer = getLeaguesFromServer;
+leagueExports.displayLeaguesInTable = displayLeaguesInTable;
+leagueExports.displayLeagues = displayLeagues;
+leagueExports.updateLeague = updateLeague;
+leagueExports.updateLeagueOnServer = updateLeagueOnServer;
+leagueExports.deleteLeague = deleteLeague;
+module.exports = leagueExports;

@@ -12,39 +12,34 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.volleyballlondon.exceptions.LeagueAlreadyExistsException;
-import com.volleyballlondon.exceptions.LeagueInvalidCharactersException;
-import com.volleyballlondon.exceptions.LeagueLengthException;
+import com.volleyballlondon.exceptions.NameAlreadyExistsException;
+import com.volleyballlondon.exceptions.NameInvalidCharactersException;
+import com.volleyballlondon.exceptions.NameLengthException;
 import com.volleyballlondon.persistence.model.League;
 import com.volleyballlondon.persistence.services.LeagueDbService;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class LeagueServiceTest {
+public class LeagueServiceTest extends VolleyballServiceTest {
 
     /** Jersey Web Service Client */
 	private static Client client;; 
 
     /** URL for the create league service on the server */
-    private static final String REST_SERVICE_URL =
+    private static final String LEAGUE_SERVICE_URL =
         "http://localhost:8080/VolleyBallLeagueSystem/rest/LeagueService/leagues";
-
-    private static final String EMPTY_STRING = "";
 
     {
         client = ClientBuilder.newClient();
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
         ctx.register(LeagueDbService.class);
         ctx.refresh();
-        leagueDbService = (LeagueDbService) ctx.getBean("mainBean");
+        leagueDbService = (LeagueDbService) ctx.getBean("leagueDbBean");
     }
     
     private static LeagueDbService leagueDbService;
@@ -86,7 +81,7 @@ public class LeagueServiceTest {
         String jsonResponse = createLeague(newLeague);
 
         assertNewLeague(newLeague);
-        assertJsonResponse(LeagueService.JSON_STATUS_SUCCESS,
+        assertJsonResponse(VolleyballService.JSON_STATUS_SUCCESS,
             LeagueService.JSON_MESSAGE_SUCCESS, jsonResponse);
         assertLeagueCount(leagueCount + 1);
     }
@@ -102,7 +97,7 @@ public class LeagueServiceTest {
         String jsonResponse = createLeague(newLeague);
 
         assertNewLeague(newLeague);
-        assertJsonResponse(LeagueService.JSON_STATUS_SUCCESS,
+        assertJsonResponse(VolleyballService.JSON_STATUS_SUCCESS,
             LeagueService.JSON_MESSAGE_SUCCESS, jsonResponse);
         assertLeagueCount(leagueCount + 1);
     }
@@ -118,8 +113,8 @@ public class LeagueServiceTest {
         String newLeague = "Men's DIVISION 03 - (SOUTH)";
         String jsonResponse = createLeague(newLeague);
 
-        assertJsonResponse(LeagueService.JSON_STATUS_FAILURE,
-            originalLeague, LeagueAlreadyExistsException.ERROR_MESSAGE,
+        assertJsonResponse(VolleyballService.JSON_STATUS_FAILURE,
+            originalLeague, NameAlreadyExistsException.ERROR_MESSAGE,
             jsonResponse);
         assertLeagueCount(leagueCount);
     }
@@ -133,8 +128,8 @@ public class LeagueServiceTest {
         long leagueCount = readLeagueCount();
         String newLeague = "Men's Division 04; - (North)";
         String jsonResponse = createLeague(newLeague);
-        assertJsonResponse(LeagueService.JSON_STATUS_FAILURE,
-            LeagueInvalidCharactersException.ERROR_MESSAGE,
+        assertJsonResponse(VolleyballService.JSON_STATUS_FAILURE,
+            newLeague, NameInvalidCharactersException.ERROR_MESSAGE,
             jsonResponse);
         assertLeagueCount(leagueCount);
     }
@@ -148,8 +143,8 @@ public class LeagueServiceTest {
         long leagueCount = readLeagueCount();
         String newLeague = EMPTY_STRING;
         String jsonResponse = createLeague(newLeague);
-        assertJsonResponse(LeagueService.JSON_STATUS_FAILURE,
-            LeagueInvalidCharactersException.ERROR_MESSAGE,
+        assertJsonResponse(VolleyballService.JSON_STATUS_FAILURE,
+            EMPTY_STRING, NameInvalidCharactersException.ERROR_MESSAGE,
             jsonResponse);
         assertLeagueCount(leagueCount);
     }
@@ -163,8 +158,8 @@ public class LeagueServiceTest {
         long leagueCount = readLeagueCount();
         String newLeague = "Men's Division 06 - (North - South)";
         String jsonResponse = createLeague(newLeague);
-        assertJsonResponse(LeagueService.JSON_STATUS_FAILURE,
-            LeagueLengthException.ERROR_MESSAGE + newLeague.length() + ".",
+        assertJsonResponse(VolleyballService.JSON_STATUS_FAILURE,
+            newLeague, NameLengthException.ERROR_MESSAGE + newLeague.length() + ".",
             jsonResponse);
         assertLeagueCount(leagueCount);
     }
@@ -178,8 +173,8 @@ public class LeagueServiceTest {
         long leagueCount = readLeagueCount();
         String newLeague = "men's Division 07";
         String jsonResponse = createLeague(newLeague);
-        assertJsonResponse(LeagueService.JSON_STATUS_FAILURE,
-            LeagueInvalidCharactersException.ERROR_MESSAGE,
+        assertJsonResponse(VolleyballService.JSON_STATUS_FAILURE,
+            newLeague, NameInvalidCharactersException.ERROR_MESSAGE,
             jsonResponse);
         assertLeagueCount(leagueCount);
     }
@@ -197,7 +192,7 @@ public class LeagueServiceTest {
         String jsonResponse = updateLeague(oldId, newLeagueName);
 
         assertLeagueNameById(oldId, newLeagueName);
-        assertJsonResponse(LeagueService.JSON_STATUS_SUCCESS,
+        assertJsonResponse(VolleyballService.JSON_STATUS_SUCCESS,
             LeagueService.JSON_MESSAGE_SUCCESS, jsonResponse);
         assertLeagueCount(leagueCount);
     }
@@ -215,7 +210,7 @@ public class LeagueServiceTest {
         String jsonResponse = updateLeague(oldId, newLeagueName);
 
         assertLeagueNameById(oldId, newLeagueName);
-        assertJsonResponse(LeagueService.JSON_STATUS_SUCCESS,
+        assertJsonResponse(VolleyballService.JSON_STATUS_SUCCESS,
             LeagueService.JSON_MESSAGE_SUCCESS, jsonResponse);
         assertLeagueCount(leagueCount);
     }
@@ -233,7 +228,7 @@ public class LeagueServiceTest {
         String jsonResponse = updateLeague(oldId, newLeagueName);
 
         assertLeagueNameById(oldId, newLeagueName);
-        assertJsonResponse(LeagueService.JSON_STATUS_SUCCESS,
+        assertJsonResponse(VolleyballService.JSON_STATUS_SUCCESS,
             LeagueService.JSON_MESSAGE_SUCCESS, jsonResponse);
         assertLeagueCount(leagueCount);
     }
@@ -252,8 +247,8 @@ public class LeagueServiceTest {
         String jsonResponse = updateLeague(oldId, newLeagueName);
 
         assertLeagueNameById(oldId, oldLeagueName);
-        assertJsonResponse(LeagueService.JSON_STATUS_FAILURE,
-            originalLeagueName, LeagueAlreadyExistsException.ERROR_MESSAGE,
+        assertJsonResponse(VolleyballService.JSON_STATUS_FAILURE,
+            originalLeagueName, NameAlreadyExistsException.ERROR_MESSAGE,
             jsonResponse);
         assertLeagueCount(leagueCount);
     }
@@ -271,8 +266,8 @@ public class LeagueServiceTest {
         String jsonResponse = updateLeague(oldId, newLeagueName);
 
         assertLeagueNameById(oldId, oldLeagueName);
-        assertJsonResponse(LeagueService.JSON_STATUS_FAILURE,
-            LeagueInvalidCharactersException.ERROR_MESSAGE,
+        assertJsonResponse(VolleyballService.JSON_STATUS_FAILURE,
+            newLeagueName, NameInvalidCharactersException.ERROR_MESSAGE,
             jsonResponse);
         assertLeagueCount(leagueCount);
     }
@@ -290,8 +285,8 @@ public class LeagueServiceTest {
         String jsonResponse = updateLeague(oldId, newLeagueName);
 
         assertLeagueNameById(oldId, oldLeagueName);
-        assertJsonResponse(LeagueService.JSON_STATUS_FAILURE,
-            LeagueInvalidCharactersException.ERROR_MESSAGE,
+        assertJsonResponse(VolleyballService.JSON_STATUS_FAILURE,
+            EMPTY_STRING, NameInvalidCharactersException.ERROR_MESSAGE,
             jsonResponse);
         assertLeagueCount(leagueCount);
     }
@@ -309,8 +304,8 @@ public class LeagueServiceTest {
         String jsonResponse = updateLeague(oldId, newLeagueName);
 
         assertLeagueNameById(oldId, oldLeagueName);
-        assertJsonResponse(LeagueService.JSON_STATUS_FAILURE,
-            LeagueLengthException.ERROR_MESSAGE + newLeagueName.length() + ".",
+        assertJsonResponse(VolleyballService.JSON_STATUS_FAILURE,
+            newLeagueName, NameLengthException.ERROR_MESSAGE + newLeagueName.length() + ".",
             jsonResponse);
         assertLeagueCount(leagueCount);
     }
@@ -328,8 +323,8 @@ public class LeagueServiceTest {
         String jsonResponse = updateLeague(oldId, newLeagueName);
 
         assertLeagueNameById(oldId, oldLeagueName);
-        assertJsonResponse(LeagueService.JSON_STATUS_FAILURE,
-            LeagueInvalidCharactersException.ERROR_MESSAGE,
+        assertJsonResponse(VolleyballService.JSON_STATUS_FAILURE,
+            newLeagueName, NameInvalidCharactersException.ERROR_MESSAGE,
             jsonResponse);
         assertLeagueCount(leagueCount);
     }
@@ -346,43 +341,12 @@ public class LeagueServiceTest {
         String jsonResponse = deleteLeague(leagueId);
 
         assertLeagueDeleted(leagueId, leagueName);
-        assertJsonResponse(LeagueService.JSON_STATUS_SUCCESS,
+        assertJsonResponse(VolleyballService.JSON_STATUS_SUCCESS,
             LeagueService.JSON_MESSAGE_SUCCESS, jsonResponse);
         assertLeagueCount(leagueCount - 1);
     }
 
     /* Private Methods. */
-
-    /**
-     * Asserts the expected status and the expected message in the actual
-     * JSON response
-     * Fails the test if JSON response cannot be parsed
-     */
-    private void assertJsonResponse(Boolean expectedStatus, String expectedMessage,
-        String actualJsonResponse) {
-        JSONParser parser = new JSONParser();
-        try {
-            JSONObject jsonObject = (JSONObject) parser.parse(actualJsonResponse);
-            Assert.assertEquals("Incorrect Message", expectedMessage,
-                (String)jsonObject.get(LeagueService.JSON_MESSAGE));
-            Assert.assertEquals("Incorrect Status", expectedStatus,
-                (Boolean)jsonObject.get(LeagueService.JSON_STATUS));
-        } catch (ParseException e) {
-            System.out.println("position: " + e.getPosition());
-            System.out.println(e);
-            Assert.fail("Unable to parse json response.");
-        }
-    }
-
-    /**
-     * Concatenates the expected message1 and message2 into the message value
-     * before asserting the JSON response
-     */
-    private void assertJsonResponse(Boolean expectedStatus, String expectedMessage1,
-        String expectedMessage2, String actualJsonResponse) {
-        assertJsonResponse(expectedStatus, expectedMessage1 + expectedMessage2,
-            actualJsonResponse);
-    }
 
     /**
      * Asserts the expected league count on the database
@@ -491,7 +455,7 @@ public class LeagueServiceTest {
 
         try {
             leagues = client
-                .target(REST_SERVICE_URL)
+                .target(LEAGUE_SERVICE_URL)
                 .request(MediaType.APPLICATION_JSON)
                 .get(list);
         } catch (Exception e) {
@@ -514,7 +478,7 @@ public class LeagueServiceTest {
         String response = null;
         try {
             response = client
-               .target(REST_SERVICE_URL)
+               .target(LEAGUE_SERVICE_URL)
                .request(MediaType.APPLICATION_JSON)
                .post(Entity.entity(form,
                     MediaType.APPLICATION_FORM_URLENCODED_TYPE),
@@ -540,7 +504,7 @@ public class LeagueServiceTest {
         String response = null;
         try {
             response = client
-               .target(REST_SERVICE_URL)
+               .target(LEAGUE_SERVICE_URL)
                .request(MediaType.APPLICATION_JSON)
                .put(Entity.entity(form,
                     MediaType.APPLICATION_FORM_URLENCODED_TYPE),
@@ -562,7 +526,7 @@ public class LeagueServiceTest {
         String response = null;
         try {
             response = client
-                .target(REST_SERVICE_URL)
+                .target(LEAGUE_SERVICE_URL)
                 .path("/{leagueid}")
                 .resolveTemplate("leagueid", leagueId)
                 .request(MediaType.APPLICATION_JSON)

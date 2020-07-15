@@ -9,107 +9,23 @@ const { JSDOM } = require('jsdom');
 /**
  * Load in the functions to be tested.
  */
-var testFunctions = require('../js/league.js')
-var setUpDialogButtons = testFunctions.setUpDialogButtons;
-var setUpDeleteDialogButtons = testFunctions.setUpDeleteDialogButtons;
-var validateLeagueInput = testFunctions.validateLeagueInput;
-var validateLeagueName = testFunctions.validateLeagueName;
-var displayError = testFunctions.displayError;
-var openCreateLeagueDialog = testFunctions.openCreateLeagueDialog;
-var createLeagueOnServer = testFunctions.createLeagueOnServer;
-var getLeaguesFromServer = testFunctions.getLeaguesFromServer;
-var displayLeaguesInTable = testFunctions.displayLeaguesInTable;
-var displayLeagues = testFunctions.displayLeagues;
-var updateLeague = testFunctions.updateLeague;
-var updateLeagueOnServer = testFunctions.updateLeagueOnServer;
-var deleteLeague = testFunctions.deleteLeague;
+var validatorExports = require('../js/validator.js')
+var validateLeagueInput = validatorExports.validateLeagueInput;
 
-function initialiseErrorFields() {
-    $("#dialog-create-league .dialog-message-1").text("");
-    $("#dialog-create-league .dialog-message-2").text("");
-    $("#dialog-create-league .dialog-message-3").text("");
-};
- 
-describe('Validation - validateLeagueName', function() {
-    before(function(done) {
-        JSDOM.fromFile('maintainleague.html')
-            .then((dom) => {
-                window = dom.window;
-                document = window.document;
-                $ = require('jquery');
-            })
-            .then(done, done);
-    });
+var leagueExports = require('../js/league.js')
+var setUpDialogButtons = leagueExports.setUpDialogButtons;
+var setUpDeleteDialogButtons = leagueExports.setUpDeleteDialogButtons;
+var displayError = leagueExports.displayError;
+var openCreateLeagueDialog = leagueExports.openCreateLeagueDialog;
+var createLeagueOnServer = leagueExports.createLeagueOnServer;
+var getLeaguesFromServer = leagueExports.getLeaguesFromServer;
+var displayLeaguesInTable = leagueExports.displayLeaguesInTable;
+var displayLeagues = leagueExports.displayLeagues;
+var updateLeague = leagueExports.updateLeague;
+var updateLeagueOnServer = leagueExports.updateLeagueOnServer;
+var deleteLeague = leagueExports.deleteLeague;
 
-    beforeEach(function() {
-        /**
-         * openCreateLeagueDialog needs to be called to set the variable dialogElement,
-         * but stub out openDialog to avoid calling ally.js code.
-         */
-        sinon.stub(testFunctions, 'openDialog');
-        openCreateLeagueDialog();
-        initialiseErrorFields();
-    });
-
-    describe('Successful validation', function() {
-        it('should return true given all the valid characters', function() {
-            var leagueName = "Men's Division 02 - (North)";
-            expect(validateLeagueName(leagueName)).to.equal(true);
-        });
-    });
-
-    describe('Failed validation', function() {
-        it('should return false given name too long', function() {
-            var leagueName = "Men's Division 06 - (North - South)";
-            var errorMessage = "League can only be 30 characters or less," +
-                " input is 35.";
-            expect(validateLeagueName(leagueName)).to.equal(false);
-            expect($("#dialog-create-league .dialog-message-1").text()).to.equal(errorMessage);
-        });
-
-        it('should return false given name does not begin with an uppercase', function() {
-            var leagueName = "men's Division 07";
-            var errorMessage = "League must start with a capital letter.";
-            expect(validateLeagueName(leagueName)).to.equal(false);
-            expect($("#dialog-create-league .dialog-message-1").text()).to.equal(errorMessage);
-        });
-
-        it('should return false given an invalid character.', function() {
-            var leagueName = "Men's Division 04; - (North)";
-            var errorMessage = "Only letters, numbers, spaces, apostrophes, " +
-                "brackets and dashes allowed.";
-            expect(validateLeagueName(leagueName)).to.equal(false);
-            expect($("#dialog-create-league .dialog-message-1").text()).to.equal(errorMessage);
-        });
-    });
-
-	afterEach(function() {
-		testFunctions.openDialog.restore();
-	});
-
-});
-
-describe('Error Display - displayError', function() {
-    it('should display errors in the correct fields', function() {
-            initialiseErrorFields();
-            sinon.stub(testFunctions, 'openDialog');
-            openCreateLeagueDialog();
-            var errorMessage1 = "League can only be 30 characters or less," +
-                " input is 35.";
-            var errorMessage2 = "League must start with a capital letter.";
-            var errorMessage3 = "Only letters, numbers, spaces, apostrophes, " +
-                "brackets and dashes allowed.";
-
-            displayError(errorMessage1);
-            displayError(errorMessage2);
-            displayError(errorMessage3);
-
-            expect($("#dialog-create-league .dialog-message-1").text()).to.equal(errorMessage1);
-            expect($("#dialog-create-league .dialog-message-2").text()).to.equal(errorMessage2);
-            expect($("#dialog-create-league .dialog-message-3").text()).to.equal(errorMessage3);
-            testFunctions.openDialog.restore();
-    });
-});
+global.validInput = true;
 
 describe('Create Operation - createLeagueOnServer', function() {
     let actualValues = [{'id':12,'name':'Division 01'},
@@ -135,16 +51,16 @@ describe('Create Operation - createLeagueOnServer', function() {
 
     it('should create league on system', function() {
 
-        sinon.stub(testFunctions, 'getLeaguesFromServer').callsFake(function fakeFn() {
+        sinon.stub(leagueExports, 'getLeaguesFromServer').callsFake(function fakeFn() {
             displayLeaguesInTable(actualValues);
         });
 
         // load league table from actualValues by the above stub.
-        testFunctions.getLeaguesFromServer();
+        leagueExports.getLeaguesFromServer();
 
         // stub out openDialog to avoid calling ally.js code.
         // openDialog is called by openCreateLeagueDialog.
-        sinon.stub(testFunctions, 'openDialog');
+        sinon.stub(leagueExports, 'openDialog');
 
         // user clicks on create button. call openCreateLeagueDialog().
         // this opens the create league dialog.
@@ -159,7 +75,8 @@ describe('Create Operation - createLeagueOnServer', function() {
         // call validateLeagueInput to set validInput to true.
         let newLeague = 'Division 12';
         dialogElement.getElementsByClassName('dialog-input')[0].value = newLeague;
-        validateLeagueInput(newLeague);
+        //validateLeagueInput(newLeague);
+        console.log('global.validInput = ' + global.validInput);
 
         // set up the create button on the create league dialog.
         setUpDialogButtons(createLeagueOnServer);
@@ -183,8 +100,8 @@ describe('Create Operation - createLeagueOnServer', function() {
         expect(ajaxArguments.type).to.equal('POST');
         expect(ajaxArguments.url).to.equal('rest/LeagueService/leagues');
 
-        testFunctions.getLeaguesFromServer.restore();
-        testFunctions.openDialog.restore();
+        leagueExports.getLeaguesFromServer.restore();
+        leagueExports.openDialog.restore();
         ajaxStub.restore();
     });
 });
@@ -236,16 +153,16 @@ describe('Read Operation - getLeaguesFromServer', function() {
     });
 
     it('should display leagues in a table on browser', function() {
-        sinon.stub(testFunctions, 'getLeaguesFromServer').callsFake(function fakeFn() {
+        sinon.stub(leagueExports, 'getLeaguesFromServer').callsFake(function fakeFn() {
             displayLeaguesInTable(actualValues);
         });
 
         // load league table from actualValues by the above stub.
-        testFunctions.getLeaguesFromServer();
+        leagueExports.getLeaguesFromServer();
 
         assertTable(actualValues);
 
-        testFunctions.getLeaguesFromServer.restore();
+        leagueExports.getLeaguesFromServer.restore();
     });
 });
 
@@ -273,16 +190,16 @@ describe('Update Operation - updateLeague', function() {
 
     it('should update league on system', function() {
 
-        sinon.stub(testFunctions, 'getLeaguesFromServer').callsFake(function fakeFn() {
+        sinon.stub(leagueExports, 'getLeaguesFromServer').callsFake(function fakeFn() {
             displayLeaguesInTable(actualValues);
         });
 
         // load league table from actualValues by the above stub.
-        testFunctions.getLeaguesFromServer();
+        leagueExports.getLeaguesFromServer();
 
         // stub out openDialog to avoid calling ally.js code.
         // openDialog is called by updateLeague.
-        sinon.stub(testFunctions, 'openDialog');
+        sinon.stub(leagueExports, 'openDialog');
 
         // user selects 9th row in table. league id: 108 league name Division 08
         let tbodyElement = document.getElementById("league-list");
@@ -338,8 +255,8 @@ describe('Update Operation - updateLeague', function() {
         expect(ajaxArguments.type).to.equal('PUT');
         expect(ajaxArguments.url).to.equal('rest/LeagueService/leagues');
 
-        testFunctions.getLeaguesFromServer.restore();
-        testFunctions.openDialog.restore();
+        leagueExports.getLeaguesFromServer.restore();
+        leagueExports.openDialog.restore();
         ajaxStub.restore();
     });
 });
@@ -368,16 +285,16 @@ describe('Delete Operation - deleteLeague', function() {
 
     it('should delete league from system', function() {
 
-        sinon.stub(testFunctions, 'getLeaguesFromServer').callsFake(function fakeFn() {
+        sinon.stub(leagueExports, 'getLeaguesFromServer').callsFake(function fakeFn() {
             displayLeaguesInTable(actualValues);
         });
 
         // load league table from actualValues by the above stub.
-        testFunctions.getLeaguesFromServer();
+        leagueExports.getLeaguesFromServer();
 
         // stub out openDialog to avoid calling ally.js code.
         // openDialog is called by deleteLeague.
-        sinon.stub(testFunctions, 'openDialog');
+        sinon.stub(leagueExports, 'openDialog');
 
         // user selects 7th row in table. league id: 84 league name Division 04
         let tbodyElement = document.getElementById("league-list");
@@ -417,8 +334,8 @@ describe('Delete Operation - deleteLeague', function() {
         expect(ajaxArguments.type).to.equal('DELETE');
         expect(ajaxArguments.url).to.equal('rest/LeagueService/leagues/84');
 
-        testFunctions.getLeaguesFromServer.restore();
-        testFunctions.openDialog.restore();
+        leagueExports.getLeaguesFromServer.restore();
+        leagueExports.openDialog.restore();
         ajaxStub.restore();
     });
 });
