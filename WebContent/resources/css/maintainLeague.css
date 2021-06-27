@@ -1,3 +1,8 @@
+h1 {
+  color: green;
+  text-align: center;
+}
+
 table.scroll {
     width: 100%; /* Optional */
     padding: 0px;
@@ -97,11 +102,12 @@ tbody td:last-child, thead th:last-child {
 #dialog-create-league h1,
 #dialog-delete-league h1 {
   margin: 0;
+  color: green;
 }
 #dialog-update-league footer,
 #dialog-create-league footer,
 #dialog-delete-league footer {
-  margin-top: 20px;
+  margin-top: 500px;
 }
 
 #dialog-update-league[hidden],

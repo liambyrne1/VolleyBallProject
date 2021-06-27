@@ -54,3 +54,58 @@ INSERT INTO clubs (name) VALUES ('Club 03');
 INSERT INTO clubs (name) VALUES ('Club 02');
 INSERT INTO clubs (name) VALUES ('Club 01');
 INSERT INTO clubs (name) VALUES ('Men''s Club1234 03 - (South)');
+
+-------------------------------------------------------------------------
+-- Add table "users"                                                  -
+-------------------------------------------------------------------------
+
+CREATE TABLE users (
+  username VARCHAR(40) NOT NULL,
+  password VARCHAR(80) NOT NULL,
+  PRIMARY KEY (username)
+);
+
+-------------------------------------------------------------------------
+-- Add table "roles"                                                  -
+-------------------------------------------------------------------------
+
+CREATE TABLE roles (
+  role_id SERIAL NOT NULL,
+  name varchar(20) NOT NULL,
+  PRIMARY KEY (role_id)
+);
+
+-------------------------------------------------------------------------
+-- Add table "users_roles"                                                  -
+-------------------------------------------------------------------------
+
+CREATE TABLE users_roles (
+  username VARCHAR(40) NOT NULL,
+  role_id INT NOT NULL,
+  PRIMARY KEY (username, role_id),
+  CONSTRAINT role_fk
+    FOREIGN KEY (role_id)
+      REFERENCES roles (role_id)
+      ON DELETE CASCADE,
+  CONSTRAINT user_fk
+    FOREIGN KEY (username)
+      REFERENCES users (username)
+      ON DELETE CASCADE
+);
+
+INSERT INTO roles (name)
+VALUES ('USER');
+
+INSERT INTO roles (name)
+VALUES ('ADMIN');
+
+INSERT INTO users VALUES ('a', '$2a$10$5q7032AQT4Y.qo6esr2TGOtTVNOIG7bB7fNrN/6buZdOsCZs.t/su');
+INSERT INTO users VALUES ('b', '$2a$10$5q7032AQT4Y.qo6esr2TGOtTVNOIG7bB7fNrN/6buZdOsCZs.t/su');
+INSERT INTO users VALUES ('c', '$2a$10$5q7032AQT4Y.qo6esr2TGOtTVNOIG7bB7fNrN/6buZdOsCZs.t/su');
+INSERT INTO users VALUES ('d', '$2a$10$5q7032AQT4Y.qo6esr2TGOtTVNOIG7bB7fNrN/6buZdOsCZs.t/su');
+
+INSERT INTO users_roles VALUES ('a', 1);
+INSERT INTO users_roles VALUES ('a', 2);
+INSERT INTO users_roles VALUES ('b', 1);
+INSERT INTO users_roles VALUES ('c', 1);
+INSERT INTO users_roles VALUES ('d', 2);

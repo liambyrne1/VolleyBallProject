@@ -1,0 +1,29 @@
+.error {
+    color: red;
+    font-weight: bold;
+}
+
+.errorLine {
+    color: red;
+    font-weight: bold;
+    margin: 30px 0px;
+}
+
+h1 {
+  color: blue;
+  text-align: center;
+}
+
+#dialog-login .dialog-content {
+  box-sizing: border-box;
+  /* maintain on screen even during scroll (potentially problematic on mobile) */
+  position: fixed;
+  width: 600px;
+  height: 400px;
+
+  /* dialogs are usually boxy things that are on top of everything */
+  padding: 20px;
+  border: 1px solid #CCC;
+  background: white;
+  z-index: 1000;
+}

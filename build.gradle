@@ -23,8 +23,10 @@ gretty {
 }
 
 ext {
-    springVersion = "5.0.7.RELEASE"
+    springVersion = "5.2.7.RELEASE"
+    springSecurityVersion = "5.2.7.RELEASE"
     jerseyVersion = "2.28"
+    jstlVersion = "1.2.1"
 }
 
 repositories {
@@ -36,16 +38,32 @@ dependencies {
            compile "org.springframework:spring-core:$springVersion",
                    "org.springframework:spring-context:$springVersion",
                    "org.springframework.data:spring-data-jpa:2.1.6.RELEASE",
+                    "org.springframework:spring-webmvc:$springVersion",
+
+                    "org.springframework.security:spring-security-core:$springSecurityVersion",
+                    "org.springframework.security:spring-security-config:$springSecurityVersion",
+                    "org.springframework.security:spring-security-web:$springSecurityVersion",
+                    "org.springframework.security:spring-security-taglibs:$springSecurityVersion",
+                    "org.springframework:spring-test:$springVersion",
+
                    "org.hibernate:hibernate-entitymanager:5.4.2.Final",
-                   "javax.servlet:servlet-api:2.5",
+                   "javax.servlet:javax.servlet-api:3.1.0",
                    "org.glassfish.jersey.containers:jersey-container-servlet:$jerseyVersion",
                    "org.glassfish.jersey.media:jersey-media-json-jackson:$jerseyVersion",
                    "org.glassfish.jersey.inject:jersey-hk2:$jerseyVersion",
                    "jakarta.servlet:jakarta.servlet-api:4.0.2",
                    "com.googlecode.json-simple:json-simple:1.1.1",
                    "org.postgresql:postgresql:42.2.5",
-                   "com.fasterxml.jackson.core:jackson-annotations:2.9.8"
-           testImplementation "junit:junit:4.12" 
+                   "com.fasterxml.jackson.core:jackson-annotations:2.9.8",
+                   "javax.servlet.jsp:javax.servlet.jsp-api:2.3.1",
+                   "javax.servlet.jsp.jstl:javax.servlet.jsp.jstl-api:$jstlVersion",
+                   "taglibs:standard:1.1.2"
+           testImplementation "junit:junit:4.12",
+                    "org.mockito:mockito-core:3.10.0",
+                    "org.springframework.security:spring-security-test:$springSecurityVersion",
+                    "org.hamcrest:hamcrest-library:2.2"
+           implementation "org.hibernate.validator:hibernate-validator:6.0.13.Final",
+                    "javax.servlet.jsp.jstl:jstl:1.2"
 }
 
 task testSetupDB(type: Exec) {
