@@ -57,6 +57,11 @@ function setUpMaintainLeagueDocument() {
     dialogElement = document.getElementById('dialog-update-league');
     setUpDialogButtons(updateLeagueOnServer);
 
+    /*
+    dialogElement = document.getElementById('dialog-delete-league');
+    setUpDialogButtons(deleteLeagueOnServer);
+    */
+
     setUpDeleteDialogButtons();
 }
 
@@ -108,7 +113,7 @@ function getLeaguesFromServer(newScrollPosition) {
                     displayLeaguesInTable(result, status, xhr, newScrollPosition);
                 },
         type: "GET",
-        url: 'rest/LeagueService/leagues'
+        url: 'leagues'
     });
 }
 
@@ -240,7 +245,7 @@ function createLeagueOnServer(event) {
     console.log('validInput = ' + validInput);
     if (validInput) {
         console.log('About to call submitToServer');
-        let url = 'rest/LeagueService/leagues';
+        let url = 'leagues';
         let type = 'POST';
         let form = event.data.form;
         let successFunction = serverSuccessCreateUpdate;
@@ -316,7 +321,7 @@ function updateLeagueOnServer(event) {
     let inputName = inputField.value;
     if (validInput) {
         if (validateDifferentName(inputName)) {
-            let url = 'rest/LeagueService/leagues';
+            let url = 'leagues';
             let type = 'PUT';
             let form = event.data.form;
             let successFunction = serverSuccessCreateUpdate;
@@ -441,7 +446,7 @@ function deleteLeagueOnServer() {
                         deleteLeagueName, newScrollPosition);
                 },
         type: "DELETE",
-        url: 'rest/LeagueService/leagues/' + leagueId
+        url: 'leagues/' + leagueId
     });
 }
 

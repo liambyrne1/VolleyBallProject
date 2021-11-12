@@ -4,21 +4,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.volleyballlondon.dev.validator.LeagueValidator;
 import com.volleyballlondon.exceptions.VolleyballException;
@@ -34,7 +34,7 @@ import com.volleyballlondon.persistence.services.LeagueDbService;
  *
  * The message is a string property which gives a description of the failure.
  */
-@Path("/LeagueService")
+@Controller
 public class LeagueService extends VolleyballService {
 
 	public LeagueService() {
@@ -45,6 +45,8 @@ public class LeagueService extends VolleyballService {
         leagueValidator = new LeagueValidator(leagueDbService);
 	}
 
+    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+
     /** League database service */
     private LeagueDbService leagueDbService;
 
@@ -52,16 +54,30 @@ public class LeagueService extends VolleyballService {
     private LeagueValidator leagueValidator;
 
     public static final String JSON_MESSAGE_SUCCESS = "New League has been created.";
+
+    /**
+     * When the controller receives the request “/registration”,
+     * creates the new UserDto object that will back the registration form.
+     * 
+     * @should return registration form
+     */
+    @GetMapping("/leaguemaintenance")
+    public String showLeagueMaintenanceForm() {
+        LOGGER.debug("Rendering league maintenance page.");
+        System.out.println("*** Running leaguemaintenance ***");
+        return "maintainLeague";
+    }
+
     /**
      * Returns all the leagues from the database in alphabetical order.
      * Do not allow Eclipse to generate this test case. Remove '@'
      * should get all leagues
      */
-    @GET
-    @Path("/leagues")
-    @Produces(MediaType.APPLICATION_JSON)
+    @GetMapping(path = "/leagues", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
     public List<League> getLeagues(){
         List<League> leagues = new ArrayList<>();
+        System.out.println("*** Running getLeagues ***");
         try {
             leagues = leagueDbService.findByOrderByName();
         } catch (Exception e) {
@@ -87,12 +103,9 @@ public class LeagueService extends VolleyballService {
      * @should fail given league name too long
      * @should fail given not begin with uppercase
      */
-    @POST
-    @Path("/leagues")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public String createLeagueByForm(@FormParam("new-league-name") String newLeague,
-        @Context HttpServletResponse servletResponse)
+    @PostMapping(path = "/leagues", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String createLeagueByForm(@RequestParam("new-league-name") String newLeague)
         throws IOException {
 
         JSONObject response = new JSONObject();
@@ -132,16 +145,16 @@ public class LeagueService extends VolleyballService {
      * @should not update given league name too long
      * @should not update given not begin with uppercase
      */
-    @PUT
-    @Path("/leagues")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public String updateLeagueByForm(@FormParam("league-id") int leagueId,
-        @FormParam("new-league-name") String newLeagueName,
-        @Context HttpServletResponse servletResponse)
+    @PutMapping(path = "/leagues", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String updateLeagueByForm(
+        @RequestBody MultiValueMap<String, String> updatedLeague)
         throws IOException {
 
         System.out.println("Entering updateLeagueByForm");
+        System.out.println(updatedLeague);
+        int leagueId = Integer.parseInt(updatedLeague.getFirst("league-id"));
+        String newLeagueName = updatedLeague.getFirst("new-league-name");
         JSONObject response = new JSONObject();
         response.put(JSON_STATUS, JSON_STATUS_FAILURE);
 
@@ -169,10 +182,11 @@ public class LeagueService extends VolleyballService {
      *
      * @should delete league
      */    
-    @DELETE
-    @Path("/leagues/{leagueid}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public String deleteLeague(@PathParam("leagueid") long leagueId){
+    @DeleteMapping(path = "/leagues/{leagueid}",
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String deleteLeague(
+        @PathVariable("leagueid") long leagueId){
         JSONObject response = new JSONObject();
         try {
             leagueDbService.deleteLeague(leagueId);

@@ -15,7 +15,7 @@
     crossorigin="anonymous">
 </script>
 
-    <link href="<c:url value="/resources/maintainLeague.css" />" rel="stylesheet">
+    <link href="<c:url value="/resources/css/maintainLeague.css" />" rel="stylesheet">
     <script src="<c:url value="/resources/js/league.js" />"></script>
     <script src="<c:url value="/resources/js/validator.js" />"></script>
 
@@ -59,6 +59,7 @@ $(document).ready(setUpMaintainLeagueDocument);
     <section>
       <label for="dialog-input">New League Name: </label>
       <input class="dialog-input" name="new-league-name" size="40" maxlength="35">
+      <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
     </section>
     <footer>
       <button type="submit" class="submit-button">Create</button>
@@ -82,6 +83,7 @@ $(document).ready(setUpMaintainLeagueDocument);
       <input class="dialog-object-id" name="league-id" hidden>
       <label for="dialog-input">New League Name: </label>
       <input class="dialog-input" name="new-league-name" size="40" maxlength="35">
+      <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
     </section>
     <footer>
       <button type="submit" class="submit-button">Update</button>

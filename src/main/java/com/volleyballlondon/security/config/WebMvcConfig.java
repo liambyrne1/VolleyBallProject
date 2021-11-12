@@ -11,9 +11,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
-@Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = { "com.volleyballlondon.security"})
+@Configuration
+@ComponentScan(basePackages = {"com.volleyballlondon.security",
+                               "com.volleyballlondon.dev"})
 public class WebMvcConfig implements WebMvcConfigurer {
 
    @Bean

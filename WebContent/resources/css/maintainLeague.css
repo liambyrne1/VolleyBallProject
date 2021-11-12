@@ -107,7 +107,7 @@ tbody td:last-child, thead th:last-child {
 #dialog-update-league footer,
 #dialog-create-league footer,
 #dialog-delete-league footer {
-  margin-top: 500px;
+  margin-top: 0px;
 }
 
 #dialog-update-league[hidden],

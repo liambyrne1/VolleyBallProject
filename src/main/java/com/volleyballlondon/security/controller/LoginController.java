@@ -2,6 +2,8 @@ package com.volleyballlondon.security.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -17,6 +19,8 @@ import com.volleyballlondon.persistence.model.Role;
 @Controller
 public class LoginController
 {
+    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+
     private static final String USER_LOGIN_PAGE = "userloginpage";
     private static final String ADMIN_LOGIN_PAGE = "adminloginpage";
 
