@@ -2,9 +2,10 @@ package com.volleyballlondon.dev.validator;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.volleyballlondon.exceptions.NameAlreadyExistsException;
-import com.volleyballlondon.exceptions.NameInvalidCharactersException;
-import com.volleyballlondon.exceptions.NameLengthException;
 import com.volleyballlondon.exceptions.VolleyballException;
 import com.volleyballlondon.persistence.model.League;
 import com.volleyballlondon.persistence.services.LeagueDbService;
@@ -67,6 +68,8 @@ public class LeagueValidator extends Validator {
      *             if league name already exists
      */
     private void validateLeagueAlreadyExists(int leagueId, String newLeague) throws NameAlreadyExistsException {
+        System.out.println("validateLeagueAlreadyExists in LeagueValidator");
+        System.out.println("leagueDbService is:- " + leagueDbService);
         List<League> leagues = leagueDbService.findByNameIgnoreCase(newLeague);
         if (!leagues.isEmpty()) {
             if (leagues.size() > 1) {

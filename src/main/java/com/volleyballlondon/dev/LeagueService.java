@@ -53,13 +53,17 @@ public class LeagueService extends VolleyballService {
     /** League validators */
     private LeagueValidator leagueValidator;
 
-    public static final String JSON_MESSAGE_SUCCESS = "New League has been created.";
+    public static final String JSON_MESSAGE_SUCCESS_CREATED
+        = "New League has been created.";
+
+    public static final String JSON_MESSAGE_SUCCESS_UPDATED
+        = "League has been updated.";
+
+    public static final String JSON_MESSAGE_SUCCESS_DELETED
+        = " has been deleted.";
 
     /**
-     * When the controller receives the request “/registration”,
-     * creates the new UserDto object that will back the registration form.
-     * 
-     * @should return registration form
+     * Returns the Maintain League form.
      */
     @GetMapping("/leaguemaintenance")
     public String showLeagueMaintenanceForm() {
@@ -115,7 +119,7 @@ public class LeagueService extends VolleyballService {
             leagueValidator.validateLeagueNameCreate(newLeague);
             leagueDbService.addLeague(newLeague);
             response.put(JSON_STATUS, JSON_STATUS_SUCCESS);
-            response.put(JSON_MESSAGE, JSON_MESSAGE_SUCCESS);
+            response.put(JSON_MESSAGE, JSON_MESSAGE_SUCCESS_CREATED);
         } catch (VolleyballException e) {
             response.put(JSON_MESSAGE, e.getMessage());
         } catch (Exception e) {
@@ -162,7 +166,7 @@ public class LeagueService extends VolleyballService {
             leagueValidator.validateLeagueNameUpdate(leagueId, newLeagueName);
             leagueDbService.updateLeagueName((long) leagueId, newLeagueName);
             response.put(JSON_STATUS, JSON_STATUS_SUCCESS);
-            response.put(JSON_MESSAGE, JSON_MESSAGE_SUCCESS);
+            response.put(JSON_MESSAGE, JSON_MESSAGE_SUCCESS_UPDATED);
         } catch (VolleyballException e) {
             response.put(JSON_MESSAGE, e.getMessage());
         } catch (Exception e) {
@@ -185,13 +189,12 @@ public class LeagueService extends VolleyballService {
     @DeleteMapping(path = "/leagues/{leagueid}",
         produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String deleteLeague(
-        @PathVariable("leagueid") long leagueId){
+    public String deleteLeague(@PathVariable("leagueid") long leagueId){
         JSONObject response = new JSONObject();
         try {
             leagueDbService.deleteLeague(leagueId);
             response.put(JSON_STATUS, JSON_STATUS_SUCCESS);
-            response.put(JSON_MESSAGE, JSON_MESSAGE_SUCCESS);
+            response.put(JSON_MESSAGE, JSON_MESSAGE_SUCCESS_DELETED);
         } catch (Exception e) {
             logException(e);
             response.put(JSON_STATUS, JSON_STATUS_FAILURE);

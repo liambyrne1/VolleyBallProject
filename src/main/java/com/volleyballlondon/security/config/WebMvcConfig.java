@@ -11,10 +11,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
+import com.volleyballlondon.persistence.services.LeagueDbService;
+
 @EnableWebMvc
 @Configuration
 @ComponentScan(basePackages = {"com.volleyballlondon.security",
-                               "com.volleyballlondon.dev"})
+                               "com.volleyballlondon.dev",
+                               "com.volleyballlondon.dev.validator"})
 public class WebMvcConfig implements WebMvcConfigurer {
 
    @Bean
@@ -45,4 +48,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
     }
+
+    @Bean
+    public LeagueDbService leagueDbService() {
+        return new LeagueDbService();
+    }
+
 }

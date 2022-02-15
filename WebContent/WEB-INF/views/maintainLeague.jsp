@@ -18,11 +18,7 @@
     <link href="<c:url value="/resources/css/maintainLeague.css" />" rel="stylesheet">
     <script src="<c:url value="/resources/js/league.js" />"></script>
     <script src="<c:url value="/resources/js/validator.js" />"></script>
-
-<!--
-<script src="js/league.js" type="text/javascript"></script>
-<script src="js/validator.js"></script>
--->
+    <script src="<c:url value="/resources/js/common.js" />"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ally.js/1.4.1/ally.min.js"></script>
 
@@ -30,26 +26,24 @@
 $(document).ready(setUpMaintainLeagueDocument);
 </script>
 
-<!--
-  <link type="text/css" rel="stylesheet" href="maintainLeague.css" >
--->
-
 </head>
 <body>
 
-    <h1>League Maintenance</h1> 
-    <table class="scroll">
-      <thead>
-        <tr><th>League Name</th></tr>
-      </thead>
-      <tbody id="league-list">
-      </tbody>
-    </table>
+<div id="dialog-league-maintenance">
+  <h1>League Maintenance</h1> 
+  <table class="scroll">
+    <thead>
+      <tr><th>League Name</th></tr>
+    </thead>
+    <tbody id="league-list">
+    </tbody>
+  </table>
   <button id="create-button">Create</button>
-<a href="<c:url value='/logout' />">Click here to logout</a>
-  <div id="maintain-message"></div>
+  <a href="<c:url value='/logout' />">Click here to logout</a>
+  <div class="maintain-message"></div>
+</div>
 
-<div id="dialog-create-league" role="dialog" aria-labelledby="dialog-title"
+<div id="dialog-create-item" role="dialog" aria-labelledby="dialog-title"
   aria-describedby="dialog-description" tabindex="-1" hidden>
   <form class="dialog-form dialog-content">
     <header>
@@ -71,7 +65,7 @@ $(document).ready(setUpMaintainLeagueDocument);
   </form>
 </div>
 
-<div id="dialog-update-league" role="dialog" aria-labelledby="dialog-title"
+<div id="dialog-update-item-name" role="dialog" aria-labelledby="dialog-title"
   aria-describedby="dialog-description" tabindex="-1" hidden>
   <form class="dialog-form dialog-content">
     <header>
@@ -95,7 +89,7 @@ $(document).ready(setUpMaintainLeagueDocument);
   </form>
 </div>
 
-<div id="dialog-delete-league" role="dialog" aria-labelledby="dialog-title"
+<div id="dialog-delete-item" role="dialog" aria-labelledby="dialog-title"
   aria-describedby="dialog-description" tabindex="-1" hidden>
   <div class="dialog-content">
     <header>

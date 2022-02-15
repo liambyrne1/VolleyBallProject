@@ -22,17 +22,21 @@ CREATE TABLE leagues (
     name VARCHAR(30) NOT NULL
 );
 
-INSERT INTO leagues (name) VALUES ('League 10');
-INSERT INTO leagues (name) VALUES ('League 09');
-INSERT INTO leagues (name) VALUES ('League 08');
-INSERT INTO leagues (name) VALUES ('League 07');
-INSERT INTO leagues (name) VALUES ('League 06');
-INSERT INTO leagues (name) VALUES ('League 05');
-INSERT INTO leagues (name) VALUES ('League 04');
-INSERT INTO leagues (name) VALUES ('League 03');
-INSERT INTO leagues (name) VALUES ('League 02');
-INSERT INTO leagues (name) VALUES ('League 01');
-INSERT INTO leagues (name) VALUES ('Men''s Division 03 - (South)');
+INSERT INTO leagues (name) VALUES ('L01');
+INSERT INTO leagues (name) VALUES ('L02');
+INSERT INTO leagues (name) VALUES ('L03');
+INSERT INTO leagues (name) VALUES ('L04');
+INSERT INTO leagues (name) VALUES ('L05');
+INSERT INTO leagues (name) VALUES ('L06');
+INSERT INTO leagues (name) VALUES ('L07');
+INSERT INTO leagues (name) VALUES ('L08');
+INSERT INTO leagues (name) VALUES ('L09');
+INSERT INTO leagues (name) VALUES ('L10');
+INSERT INTO leagues (name) VALUES ('L11');
+INSERT INTO leagues (name) VALUES ('L12');
+INSERT INTO leagues (name) VALUES ('L13');
+INSERT INTO leagues (name) VALUES ('L14');
+INSERT INTO leagues (name) VALUES ('L15');
 
 -------------------------------------------------------------------------
 -- Add table "Clubs"                                                  -
@@ -43,17 +47,76 @@ CREATE TABLE clubs (
     name VARCHAR(30) NOT NULL
 );
 
-INSERT INTO clubs (name) VALUES ('Club 10');
-INSERT INTO clubs (name) VALUES ('Club 09');
-INSERT INTO clubs (name) VALUES ('Club 08');
-INSERT INTO clubs (name) VALUES ('Club 07');
-INSERT INTO clubs (name) VALUES ('Club 06');
-INSERT INTO clubs (name) VALUES ('Club 05');
-INSERT INTO clubs (name) VALUES ('Club 04');
-INSERT INTO clubs (name) VALUES ('Club 03');
-INSERT INTO clubs (name) VALUES ('Club 02');
-INSERT INTO clubs (name) VALUES ('Club 01');
-INSERT INTO clubs (name) VALUES ('Men''s Club1234 03 - (South)');
+INSERT INTO clubs (name) VALUES ('C01');
+INSERT INTO clubs (name) VALUES ('C02');
+INSERT INTO clubs (name) VALUES ('C03');
+INSERT INTO clubs (name) VALUES ('C04');
+INSERT INTO clubs (name) VALUES ('C05');
+INSERT INTO clubs (name) VALUES ('C06');
+INSERT INTO clubs (name) VALUES ('C07');
+INSERT INTO clubs (name) VALUES ('C08');
+INSERT INTO clubs (name) VALUES ('C09');
+INSERT INTO clubs (name) VALUES ('C10');
+INSERT INTO clubs (name) VALUES ('C11');
+INSERT INTO clubs (name) VALUES ('C12');
+INSERT INTO clubs (name) VALUES ('C13');
+INSERT INTO clubs (name) VALUES ('C14');
+INSERT INTO clubs (name) VALUES ('C15');
+
+-------------------------------------------------------------------------
+-- Add table "Teams"                                                  -
+-------------------------------------------------------------------------
+
+CREATE TABLE teams (
+    id SERIAL NOT NULL,
+    name VARCHAR(30) NOT NULL,
+    club_id INT NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT club_fk
+      FOREIGN KEY (club_id)
+        REFERENCES clubs (id)
+        ON DELETE CASCADE
+);
+
+INSERT INTO teams (name, club_id) VALUES ('T101', 1);
+INSERT INTO teams (name, club_id) VALUES ('T102', 1);
+
+INSERT INTO teams (name, club_id) VALUES ('T201', 2);
+INSERT INTO teams (name, club_id) VALUES ('T202', 2);
+INSERT INTO teams (name, club_id) VALUES ('T203', 2);
+INSERT INTO teams (name, club_id) VALUES ('T204', 2);
+
+INSERT INTO teams (name, club_id) VALUES ('T301', 3);
+INSERT INTO teams (name, club_id) VALUES ('T302', 3);
+INSERT INTO teams (name, club_id) VALUES ('T303', 3);
+INSERT INTO teams (name, club_id) VALUES ('T304', 3);
+INSERT INTO teams (name, club_id) VALUES ('T305', 3);
+INSERT INTO teams (name, club_id) VALUES ('T306', 3);
+
+INSERT INTO teams (name, club_id) VALUES ('T401', 4);
+INSERT INTO teams (name, club_id) VALUES ('T402', 4);
+INSERT INTO teams (name, club_id) VALUES ('T403', 4);
+INSERT INTO teams (name, club_id) VALUES ('T404', 4);
+INSERT INTO teams (name, club_id) VALUES ('T405', 4);
+INSERT INTO teams (name, club_id) VALUES ('T406', 4);
+INSERT INTO teams (name, club_id) VALUES ('T407', 4);
+INSERT INTO teams (name, club_id) VALUES ('T408', 4);
+
+INSERT INTO teams (name, club_id) VALUES ('T501', 5);
+INSERT INTO teams (name, club_id) VALUES ('T502', 5);
+INSERT INTO teams (name, club_id) VALUES ('T503', 5);
+INSERT INTO teams (name, club_id) VALUES ('T504', 5);
+INSERT INTO teams (name, club_id) VALUES ('T505', 5);
+INSERT INTO teams (name, club_id) VALUES ('T506', 5);
+INSERT INTO teams (name, club_id) VALUES ('T507', 5);
+INSERT INTO teams (name, club_id) VALUES ('T508', 5);
+INSERT INTO teams (name, club_id) VALUES ('T509', 5);
+INSERT INTO teams (name, club_id) VALUES ('T510', 5);
+INSERT INTO teams (name, club_id) VALUES ('T511', 5);
+INSERT INTO teams (name, club_id) VALUES ('T512', 5);
+INSERT INTO teams (name, club_id) VALUES ('T513', 5);
+INSERT INTO teams (name, club_id) VALUES ('T514', 5);
+INSERT INTO teams (name, club_id) VALUES ('T515', 5);
 
 -------------------------------------------------------------------------
 -- Add table "users"                                                  -

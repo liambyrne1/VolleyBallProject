@@ -46,9 +46,9 @@ tbody td:last-child, thead th:last-child {
     border-right: none;
 }
 
-#dialog-update-league,
-#dialog-create-league,
-#dialog-delete-league {
+#dialog-update-item-name,
+#dialog-create-item,
+#dialog-delete-item {
   position: fixed;
   top: 0;
   right: 0;
@@ -58,9 +58,9 @@ tbody td:last-child, thead th:last-child {
   z-index: 999;
 }
 
-#dialog-update-league:before,
-#dialog-create-league:before,
-#dialog-delete-league:before {
+#dialog-update-item-name:before,
+#dialog-create-item:before,
+#dialog-delete-item:before {
   content: "XXX";
   position: fixed;
   top: 0;
@@ -75,9 +75,9 @@ tbody td:last-child, thead th:last-child {
 }
 
 /* show the dialog in the center of the screen */
-#dialog-update-league .dialog-content,
-#dialog-create-league .dialog-content,
-#dialog-delete-league .dialog-content {
+#dialog-update-item-name .dialog-content,
+#dialog-create-item .dialog-content,
+#dialog-delete-item .dialog-content {
   box-sizing: border-box;
   /* maintain on screen even during scroll (potentially problematic on mobile) */
   position: fixed;
@@ -85,7 +85,7 @@ tbody td:last-child, thead th:last-child {
   top: 50%;
   left: 50%;
   width: 600px;
-  height: 400px;
+  height: 300px;
   transform: translate3d(-50%,-50%,0);
 
   /* dialogs are usually boxy things that are on top of everything */
@@ -98,27 +98,27 @@ tbody td:last-child, thead th:last-child {
   transition: transform 0.2s ease-in-out;
 }
 
-#dialog-update-league h1,
-#dialog-create-league h1,
-#dialog-delete-league h1 {
+#dialog-update-item-name h1,
+#dialog-create-item h1,
+#dialog-delete-item h1 {
   margin: 0;
   color: green;
 }
-#dialog-update-league footer,
-#dialog-create-league footer,
-#dialog-delete-league footer {
+#dialog-update-item-name footer,
+#dialog-create-item footer,
+#dialog-delete-item footer {
   margin-top: 0px;
 }
 
-#dialog-update-league[hidden],
-#dialog-update-league[hidden]:before,
-#dialog-update-league[hidden] .dialog-content,
-#dialog-create-league[hidden],
-#dialog-create-league[hidden]:before,
-#dialog-create-league[hidden] .dialog-content,
-#dialog-delete-league[hidden],
-#dialog-delete-league[hidden]:before,
-#dialog-delete-league[hidden] .dialog-content {
+#dialog-update-item-name[hidden],
+#dialog-update-item-name[hidden]:before,
+#dialog-update-item-name[hidden] .dialog-content,
+#dialog-create-item[hidden],
+#dialog-create-item[hidden]:before,
+#dialog-create-item[hidden] .dialog-content,
+#dialog-delete-item[hidden],
+#dialog-delete-item[hidden]:before,
+#dialog-delete-item[hidden] .dialog-content {
   display: block;
   visibility: hidden;
   transform: translate3d(0px, -1px, 0px) scale(0);
@@ -126,18 +126,18 @@ tbody td:last-child, thead th:last-child {
     visibility 0s linear 0.2s,
     transform 0s linear 0.2s;
 }
-#dialog-update-league[hidden]:before,
-#dialog-create-league[hidden]:before,
-#dialog-delete-league[hidden]:before {
+#dialog-update-item-name[hidden]:before,
+#dialog-create-item[hidden]:before,
+#dialog-delete-item[hidden]:before {
   opacity: 0;
   transition:
     opacity 0.2s ease-in-out,
     visibility 0s linear 0.2s,
     transform 0s linear 0.2s;
 }
-#dialog-update-league[hidden] .dialog-content,
-#dialog-create-league[hidden] .dialog-content,
-#dialog-delete-league[hidden] .dialog-content {
+#dialog-update-item-name[hidden] .dialog-content,
+#dialog-create-item[hidden] .dialog-content,
+#dialog-delete-item[hidden] .dialog-content {
   transform: translate3d(0px, -1px, 0px) scale(0);
   transition:
     transform 0.2s ease-in-out,

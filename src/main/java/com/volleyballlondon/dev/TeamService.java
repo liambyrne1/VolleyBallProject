@@ -21,13 +21,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.volleyballlondon.dev.validator.ClubValidator;
+import com.volleyballlondon.dev.validator.TeamValidator;
 import com.volleyballlondon.exceptions.VolleyballException;
-import com.volleyballlondon.persistence.model.Club;
-import com.volleyballlondon.persistence.services.ClubDbService;
+import com.volleyballlondon.persistence.model.Team;
+import com.volleyballlondon.persistence.services.TeamDbService;
 
 /**
- * Provides the CRUD services for a club Returns a JSON response which has two
+ * Provides the CRUD services for a team Returns a JSON response which has two
  * properties:- status message
  *
  * The status property has the following boolean values:- true the service is
@@ -36,88 +36,83 @@ import com.volleyballlondon.persistence.services.ClubDbService;
  * The message is a string property which gives a description of the failure.
  */
 @Controller
-public class ClubService extends VolleyballService {
+public class TeamService extends VolleyballService {
 
-	public ClubService() {
+	public TeamService() {
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-        ctx.register(ClubDbService.class);
+        ctx.register(TeamDbService.class);
         ctx.refresh();
-        clubDbService = (ClubDbService) ctx.getBean("clubDbBean");
-        clubValidator = new ClubValidator(clubDbService);
+        teamDbService = (TeamDbService) ctx.getBean("teamDbBean");
+        teamValidator = new TeamValidator(teamDbService);
 	}
 
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
-    /** Club database service */
-    private ClubDbService clubDbService;
+    /** Team database service */
+    private TeamDbService teamDbService;
 
-    /** Club validators */
-    private ClubValidator clubValidator;
+    /** Team validators */
+    private TeamValidator teamValidator;
 
     public static final String JSON_MESSAGE_SUCCESS_CREATED
-        = "New Club has been created.";
+        = "New Team has been created.";
 
     public static final String JSON_MESSAGE_SUCCESS_UPDATED
-        = "Club has been updated.";
+        = "Team has been updated.";
 
     public static final String JSON_MESSAGE_SUCCESS_DELETED
         = " has been deleted.";
 
     /**
-     * Returns the Maintain Club form.
-     */
-    @GetMapping("/clubmaintenance")
-    public String showClubMaintenanceForm() {
-        LOGGER.debug("Rendering club maintenance page.");
-        System.out.println("*** Running clubmaintenance ***");
-        return "maintainClub";
-    }
-
-    /**
-     * Returns all the clubs from the database in alphabetical order.
+     * Returns all the teams of a given club from the database in alphabetical order.
      * Do not allow Eclipse to generate this test case. Remove '@'
-     * should get all clubs
+     * should get all team of a given club
      */
-    @GetMapping(path = "/clubs", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/club/{clubid}/teams",
+        produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<Club> getClubs(){
-        List<Club> clubs = new ArrayList<>();
+    public List<Team> getTeamsOfClub(@PathVariable("clubid") long clubId){
+        List<Team> teams = new ArrayList<>();
         try {
-            clubs = clubDbService.findByOrderByName();
+            teams = teamDbService.findByClubIdOrderByName(clubId);
         } catch (Exception e) {
             logException(e);
         }
-        return clubs;
+        return teams;
     }
 
     /**
-     * Creates a new club on the database.
+     * Creates a new team of a club on the database.
      * 
-     * @param newClub
-     *            - the new club name
-     * @return returns the following responses:- success New Club has been
-     *         created failure Club Name contains Invalid Characters failure
-     *         Club already exists failure Volleyball server is unavailable
+     * @param newTeam
+     *            - the new team name
+     * @param  clubId
+     *            - the club id of the team.
+     * @return returns the following responses:- success New Team has been
+     *         created failure Team Name contains Invalid Characters failure
+     *         Team already exists failure Volleyball server is unavailable
      *
-     * @should create new club
-     * @should create new club with all valid characters
-     * @should fail if club already exists
+     * @should create new team
+     * @should create new team with all valid characters
+     * @should fail if team already exists
      * @should fail given invalid character
      * @should fail given empty string
-     * @should fail given club name too long
+     * @should fail given team name too long
      * @should fail given not begin with uppercase
      */
-    @PostMapping(path = "/clubs", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/club/{clubid}/teams",
+        produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String createClubByForm(@RequestParam("new-club-name") String newClub)
+    public String createTeamByForm(@RequestParam("new-team-name") String newTeam,
+        @PathVariable("clubid") long clubId)
         throws IOException {
 
         JSONObject response = new JSONObject();
         response.put(JSON_STATUS, JSON_STATUS_FAILURE);
 
         try {
-            clubValidator.validateClubNameCreate(newClub);
-            clubDbService.addClub(newClub);
+            teamValidator.validateTeamNameCreate(newTeam);
+            teamDbService.addTeam(newTeam, clubId);
             response.put(JSON_STATUS, JSON_STATUS_SUCCESS);
             response.put(JSON_MESSAGE, JSON_MESSAGE_SUCCESS_CREATED);
         } catch (VolleyballException e) {
@@ -130,41 +125,42 @@ public class ClubService extends VolleyballService {
     }
 
     /**
-     * Updates an existing club on the database. Allow user to change
-     * the case of the club name being updated.
+     * Updates an existing team on the database. Allow user to change
+     * the case of the team name being updated.
      * 
-     * @param clubId Id of the club that is being updated.
-     * @param newClubName
-     *            - the new club name
-     * @return returns the following responses:- success New Club has been
-     *         updated failure Club Name contains Invalid Characters failure
-     *         Club already exists failure Volleyball server is unavailable
+     * @param teamId Id of the team that is being updated.
+     * @param newTeamName
+     *            - the new team name
+     * @return returns the following responses:- success New Team has been
+     *         updated failure Team Name contains Invalid Characters failure
+     *         Team already exists failure Volleyball server is unavailable
      *
-     * @should update club
-     * @should update club with all valid characters
-     * @should update club with different case
-     * @should not update if club already exists
+     * @should update team
+     * @should update team with all valid characters
+     * @should update team with different case
+     * @should not update if team already exists
      * @should not update given invalid character
      * @should not update given empty string
-     * @should not update given club name too long
+     * @should not update given team name too long
      * @should not update given not begin with uppercase
      */
-    @PutMapping(path = "/clubs", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/club/{clubid}/teams",
+        produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String updateClubByForm(
-        @RequestBody MultiValueMap<String, String> updatedClub)
+    public String updateTeamByForm(
+        @RequestBody MultiValueMap<String, String> updatedTeam)
         throws IOException {
 
-        System.out.println("Entering updateClubByForm");
-        System.out.println(updatedClub);
-        int clubId = Integer.parseInt(updatedClub.getFirst("club-id"));
-        String newClubName = updatedClub.getFirst("new-club-name");
+        System.out.println("Entering updateTeamByForm");
+        System.out.println(updatedTeam);
+        int teamId = Integer.parseInt(updatedTeam.getFirst("team-id"));
+        String newTeamName = updatedTeam.getFirst("new-team-name");
         JSONObject response = new JSONObject();
         response.put(JSON_STATUS, JSON_STATUS_FAILURE);
 
         try {
-            clubValidator.validateClubNameUpdate(clubId, newClubName);
-            clubDbService.updateClubName((long) clubId, newClubName);
+            teamValidator.validateTeamNameUpdate(teamId, newTeamName);
+            teamDbService.updateTeamName((long) teamId, newTeamName);
             response.put(JSON_STATUS, JSON_STATUS_SUCCESS);
             response.put(JSON_MESSAGE, JSON_MESSAGE_SUCCESS_UPDATED);
         } catch (VolleyballException e) {
@@ -177,22 +173,22 @@ public class ClubService extends VolleyballService {
     }
 
     /**
-     * Deletes an existing club on the database.
+     * Deletes an existing team on the database.
      * 
-     * @param clubId Id of the club that is being deleted.
+     * @param teamId Id of the team that is being deleted.
      *
-     * @return returns the following responses:- success Club has been deleted
+     * @return returns the following responses:- success Team has been deleted
      *         failure Volleyball server is unavailable
      *
-     * @should delete club
+     * @should delete team
      */    
-    @DeleteMapping(path = "/clubs/{clubid}",
+    @DeleteMapping(path = "/club/{clubid}/teams/{teamid}",
         produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String deleteClub(@PathVariable("clubid") long clubId){
+    public String deleteTeam(@PathVariable("teamid") long teamId){
         JSONObject response = new JSONObject();
         try {
-            clubDbService.deleteClub(clubId);
+            teamDbService.deleteTeam(teamId);
             response.put(JSON_STATUS, JSON_STATUS_SUCCESS);
             response.put(JSON_MESSAGE, JSON_MESSAGE_SUCCESS_DELETED);
         } catch (Exception e) {

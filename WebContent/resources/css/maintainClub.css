@@ -1,0 +1,321 @@
+h1 {
+  color: green;
+  text-align: center;
+}
+
+table.scroll {
+    width: 100%; /* Optional */
+    padding: 0px;
+    /* border-collapse: collapse; */
+    border-spacing: 0;
+    border: 2px solid black;
+}
+
+table.scroll tbody,
+table.scroll thead { display: block; }
+
+table.scroll tbody {
+    height: 310px;
+    padding: 0px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+thead th {
+    height: 20px;
+    padding: 0px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    width: 1%; /* Optional */
+    border-right: 1px solid black;
+    text-align: left;
+}
+
+tbody { border-top: 2px solid black; }
+
+tbody td {
+    height: 20px;
+    padding: 0px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    width: 1%; /* Optional */
+    border-bottom: 1px solid #ddd;
+}
+
+tbody td:last-child, thead th:last-child {
+    border-right: none;
+}
+
+#dialog-update-item-name,
+#dialog-create-item,
+#dialog-delete-item {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0,0,0,0);
+  z-index: 999;
+}
+
+#dialog-update-item-name:before,
+#dialog-create-item:before,
+#dialog-delete-item:before {
+  content: "XXX";
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0,0,0,0.25);
+  z-index: 999;
+
+  /* fade in */
+  transition: opacity 0.2s ease-in-out;
+}
+
+/* show the dialog in the center of the screen */
+#dialog-update-item-name .dialog-content,
+#dialog-create-item .dialog-content,
+#dialog-delete-item .dialog-content {
+  box-sizing: border-box;
+  /* maintain on screen even during scroll (potentially problematic on mobile) */
+  position: fixed;
+  /* when centering, try using FlexBox instead of this junk */
+  top: 50%;
+  left: 50%;
+  width: 600px;
+  height: 300px;
+  transform: translate3d(-50%,-50%,0);
+
+  /* dialogs are usually boxy things that are on top of everything */
+  padding: 20px;
+  border: 1px solid #CCC;
+  background: white;
+  z-index: 1000;
+
+  /* zoom in from the center */
+  transition: transform 0.2s ease-in-out;
+}
+
+#dialog-update-item-name h1,
+#dialog-create-item h1,
+#dialog-delete-item h1 {
+  margin: 0;
+  color: green;
+}
+#dialog-update-item-name footer,
+#dialog-create-item footer,
+#dialog-delete-item footer {
+  margin-top: 0px;
+}
+
+#dialog-update-item-name[hidden],
+#dialog-update-item-name[hidden]:before,
+#dialog-update-item-name[hidden] .dialog-content,
+#dialog-create-item[hidden],
+#dialog-create-item[hidden]:before,
+#dialog-create-item[hidden] .dialog-content,
+#dialog-delete-item[hidden],
+#dialog-delete-item[hidden]:before,
+#dialog-delete-item[hidden] .dialog-content {
+  display: block;
+  visibility: hidden;
+  transform: translate3d(0px, -1px, 0px) scale(0);
+  transition:
+    visibility 0s linear 0.2s,
+    transform 0s linear 0.2s;
+}
+#dialog-update-item-name[hidden]:before,
+#dialog-create-item[hidden]:before,
+#dialog-delete-item[hidden]:before {
+  opacity: 0;
+  transition:
+    opacity 0.2s ease-in-out,
+    visibility 0s linear 0.2s,
+    transform 0s linear 0.2s;
+}
+#dialog-update-item-name[hidden] .dialog-content,
+#dialog-create-item[hidden] .dialog-content,
+#dialog-delete-item[hidden] .dialog-content {
+  transform: translate3d(0px, -1px, 0px) scale(0);
+  transition:
+    transform 0.2s ease-in-out,
+    visibility 0s linear 0.2s;
+}
+
+/* Team List Dialog. */
+
+#dialog-club-team-maintenance {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0,0,0,0);
+  z-index: 999;
+}
+
+#dialog-club-team-maintenance:before {
+  content: "XXX";
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0,0,0,0.25);
+  z-index: 999;
+
+  /* fade in */
+  transition: opacity 0.2s ease-in-out;
+}
+
+/* show the dialog in the center of the screen */
+#dialog-club-team-maintenance .dialog-content {
+  box-sizing: border-box;
+  /* maintain on screen even during scroll (potentially problematic on mobile) */
+  position: fixed;
+  /* when centering, try using FlexBox instead of this junk */
+  top: 45%;
+  left: 50%;
+  width: 600px;
+  height: 500px;
+  transform: translate3d(-50%,-50%,0);
+
+  /* dialogs are usually boxy things that are on top of everything */
+  padding: 20px;
+  border: 1px solid #CCC;
+  background: white;
+  z-index: 1000;
+
+  /* zoom in from the center */
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Team List Dialog HIDDEN. */
+
+#dialog-club-team-maintenance[hidden],
+#dialog-club-team-maintenance[hidden]:before,
+#dialog-club-team-maintenance[hidden] .dialog-content {
+  display: block;
+  visibility: hidden;
+  transform: translate3d(0px, -1px, 0px) scale(0);
+  transition:
+    visibility 0s linear 0.2s,
+    transform 0s linear 0.2s;
+}
+#dialog-club-team-maintenance[hidden]:before {
+  opacity: 0;
+  transition:
+    opacity 0.2s ease-in-out,
+    visibility 0s linear 0.2s,
+    transform 0s linear 0.2s;
+}
+#dialog-club-team-maintenance[hidden] .dialog-content {
+  transform: translate3d(0px, -1px, 0px) scale(0);
+  transition:
+    transform 0.2s ease-in-out,
+    visibility 0s linear 0.2s;
+}
+
+/* Team dialogs create/update/delete. */
+
+#dialog-update-club-team-name,
+#dialog-create-club-team,
+#dialog-delete-club-team {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0,0,0,0);
+  z-index: 999;
+}
+
+#dialog-update-club-team-name:before,
+#dialog-create-club-team:before,
+#dialog-delete-club-team:before {
+  content: "XXX";
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0,0,0,0.25);
+  z-index: 999;
+
+  /* fade in */
+  transition: opacity 0.2s ease-in-out;
+}
+
+/* show the dialog in the center of the screen */
+#dialog-update-club-team-name .dialog-content,
+#dialog-create-club-team .dialog-content,
+#dialog-delete-club-team .dialog-content {
+  box-sizing: border-box;
+  /* maintain on screen even during scroll (potentially problematic on mobile) */
+  position: fixed;
+  /* when centering, try using FlexBox instead of this junk */
+  top: 50%;
+  left: 50%;
+  width: 600px;
+  height: 300px;
+  transform: translate3d(-50%,-50%,0);
+
+  /* dialogs are usually boxy things that are on top of everything */
+  padding: 20px;
+  border: 1px solid #CCC;
+  background: white;
+  z-index: 1000;
+
+  /* zoom in from the center */
+  transition: transform 0.2s ease-in-out;
+}
+
+#dialog-update-club-team-name h1,
+#dialog-create-club-team h1,
+#dialog-delete-club-team h1 {
+  margin: 0;
+  color: green;
+}
+#dialog-update-club-team-name footer,
+#dialog-create-club-team footer,
+#dialog-delete-club-team footer {
+  margin-top: 0px;
+}
+
+#dialog-update-club-team-name[hidden],
+#dialog-update-club-team-name[hidden]:before,
+#dialog-update-club-team-name[hidden] .dialog-content,
+#dialog-create-club-team[hidden],
+#dialog-create-club-team[hidden]:before,
+#dialog-create-club-team[hidden] .dialog-content,
+#dialog-delete-club-team[hidden],
+#dialog-delete-club-team[hidden]:before,
+#dialog-delete-club-team[hidden] .dialog-content {
+  display: block;
+  visibility: hidden;
+  transform: translate3d(0px, -1px, 0px) scale(0);
+  transition:
+    visibility 0s linear 0.2s,
+    transform 0s linear 0.2s;
+}
+#dialog-update-club-team-name[hidden]:before,
+#dialog-create-club-team[hidden]:before,
+#dialog-delete-club-team[hidden]:before {
+  opacity: 0;
+  transition:
+    opacity 0.2s ease-in-out,
+    visibility 0s linear 0.2s,
+    transform 0s linear 0.2s;
+}
+#dialog-update-club-team-name[hidden] .dialog-content,
+#dialog-create-club-team[hidden] .dialog-content,
+#dialog-delete-club-team[hidden] .dialog-content {
+  transform: translate3d(0px, -1px, 0px) scale(0);
+  transition:
+    transform 0.2s ease-in-out,
+    visibility 0s linear 0.2s;
+}
+
+
