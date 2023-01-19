@@ -39,7 +39,7 @@ $(document).ready(setUpMaintainClubDocument);
     </tbody>
   </table>
   <button id="create-button">Create</button>
-  <a href="<c:url value='/logout' />">Click here to logout</a>
+  <button id='close-button'>Close</button>
   <div class="maintain-message"></div>
 </div>
 
@@ -113,10 +113,10 @@ $(document).ready(setUpMaintainClubDocument);
 <div id="dialog-club-team-maintenance" role="dialog" aria-labelledby="dialog-title"
   aria-describedby="dialog-description" tabindex="-1" hidden>
   <div class="dialog-content">
-    <h1>Team Maintenance</h1> 
+    <h1>Club Team Maintenance</h1> 
     <table class="scroll">
       <thead>
-        <tr><th id="dialog-club"></th></tr>
+        <tr><th id="dialog-team-header"></th></tr>
       </thead>
       <tbody id="team-list" class='team-list-class'>
       </tbody>

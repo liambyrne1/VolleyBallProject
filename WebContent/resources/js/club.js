@@ -11,11 +11,6 @@
  const CLUB_LIST = 'club-list';
 
 /**
- * The id of the tbody element of the team table.
- */
- const TEAM_LIST = 'team-list';
-
-/**
  * The name of the current item i.e. league/club/team.
  */
  const ITEM = 'Club';
@@ -40,6 +35,12 @@
  */
  const DIALOG_TEAM_MAINTENANCE = 'dialog-club-team-maintenance';
 
+/**
+ * The id of the tbody element of the team table.
+ */
+ const TEAM_LIST = 'team-list';
+
+/**
 /**
  * The name of the create team dialog.
  */
@@ -66,11 +67,6 @@
  const URL_TEAM_START = 'club';
 
 /**
- * The URL end part that relates to the team processing.
- */
- const URL_TEAM_END = 'teams';
-
-/**
  * Correction for scroll position in the table.
  * The JQuery .position() method returns the position of a element relative to
  * the offset parent, in this case the tbody element relative to the table element.
@@ -86,10 +82,9 @@ const SCROLL_ADJUSTMENT = 32;
  *
  * Assigns the openCreateItemDialog function to the create button.
  *
- * Uses the class selector to assign the validateInput function to the
- * input field on each dialog.
- *
  * Sets up the events on the three dialogs create, update and delete.
+ *
+ * Sets up the create and cancel events on the team maintenance dialog.
  */
 function setUpMaintainClubDocument() {
     getClubsForTable(undefined, URL_END, ITEM);
@@ -98,6 +93,10 @@ function setUpMaintainClubDocument() {
                       'baseDialogName' : DIALOG_CLUB_MAINTENANCE};
     $('#create-button').click(parameters, openCreateItemDialog);
 
+    $('#close-button').click(gotoAdminLoginPage);
+
+    document.addEventListener('keydown', assignEscapeToCloseButton);
+
     setUpDialogButtons(DIALOG_CREATE_ITEM, DIALOG_CLUB_MAINTENANCE, createItemOnServer,
         URL_END, 'created', ITEM, reloadClubsFromServer);
 
@@ -105,25 +104,23 @@ function setUpMaintainClubDocument() {
         updateItemOnServer, URL_END, 'updated', ITEM, reloadClubsFromServer);
 
     setUpDeleteDialogButtons(DIALOG_DELETE_ITEM, DIALOG_CLUB_MAINTENANCE,
-        deleteItemOnServer, URL_END, ITEM, reloadClubsFromServer);
+        deleteItemOnServer, URL_END, 'deleted', ITEM, reloadClubsFromServer);
 
-    /*
-    Attach function to create and cancel button on maintain team dialog.
-    This should only be done once.
-    */
     parameters = {'dialogName' : DIALOG_CREATE_CLUB_TEAM,
                   'baseDialogName' : DIALOG_TEAM_MAINTENANCE};
     $('#create-team-button').click(parameters, openCreateItemDialog);
 
-    let dialog = document.getElementById(DIALOG_TEAM_MAINTENANCE);
-    let cancelButtonElement = dialog.getElementsByClassName('dialog-cancel-button')[0];
-    parameters = {'dialog' : dialog};
-    $(cancelButtonElement).click(parameters, cancelDialogViaButton);
+    setUpCancelEvent(DIALOG_TEAM_MAINTENANCE);
 
 }
 
 /* Read Code Section. */
 
+/**
+ * Gets the clubs from the server and displays them in a table.
+ * Each row contains a club name, update button, delete button
+ * and team button.
+ */
 function getClubsForTable(newScrollPosition, urlEnd, item) {
     getItemsFromServer(newScrollPosition, displayItemsInTextAnd3ButtonTable,
         urlEnd, item, DIALOG_CLUB_MAINTENANCE, CLUB_LIST,
@@ -131,9 +128,13 @@ function getClubsForTable(newScrollPosition, urlEnd, item) {
             'DIALOG_CLUB_MAINTENANCE)',
         'Delete', 'deleteItem(this, DIALOG_DELETE_ITEM, DIALOG_CLUB_MAINTENANCE)',
         'Team', 'maintainTeams(this, URL_TEAM_START, DIALOG_CLUB_MAINTENANCE, ' +
-            'DIALOG_TEAM_MAINTENANCE, TEAM_LIST)');
+            'DIALOG_TEAM_MAINTENANCE, TEAM_LIST, setUpMaintainTeamForm)');
 }
 
+/**
+ * Gets the teams from the server and displays them in a table.
+ * Each row contains a team name, update button and delete button.
+ */
 function getTeamsForTable(newScrollPosition, urlEnd, item) {
     getItemsFromServer(newScrollPosition, displayItemsInTextAnd2ButtonTable,
         urlEnd, item, DIALOG_TEAM_MAINTENANCE, TEAM_LIST,
@@ -141,11 +142,19 @@ function getTeamsForTable(newScrollPosition, urlEnd, item) {
         'Delete', 'deleteItem(this, DIALOG_DELETE_CLUB_TEAM, DIALOG_TEAM_MAINTENANCE)');
 }
 
+/**
+ * Invoked after a club create/update/delete.
+ * Clears the club table, and reloads it with the new data.
+ */
 function reloadClubsFromServer(newScrollPosition, url, item) {
     $('#' + CLUB_LIST).empty();
     getClubsForTable(newScrollPosition, url, item);
 }
 
+/**
+ * Invoked after a team create/update/delete.
+ * Clears the team table, and reloads it with the new data.
+ */
 function reloadTeamsFromServer(newScrollPosition, url, item) {
     $('#' + TEAM_LIST).empty();
     getTeamsForTable(newScrollPosition, url, item);
@@ -154,59 +163,22 @@ function reloadTeamsFromServer(newScrollPosition, url, item) {
 /* Maintain Team Code Section. */
 
 /**
- * Invoked by team button in table.
- * Team button is in third data cell of row.
- * Retrieve the item id and name from the table,
- * construct the teams url
- * and open the teams dialog.
+ * Called when Maintain Club Team dialog is opened.
+ *
+ * Loads the teams for a given club from the server into the table.
+ *
+ * Sets up the events on the three team dialogs
+ * create team, update team and delete team.
  *
  * Parameters
  *
- * buttonElement - Button element which invoked the action, defining row.
- * url_start - Start of URL to list the teams in the table. The club id has
- *             appended to this string.
- * baseDialogName - The dialog from which the below dialog is propagated from.
- *                  This is required to clear the main maintenance message
- *                  on the previous dialog.
- * dialogName - The dialog which is being opened.
- */
-function maintainTeams(buttonElement, url_start, baseDialogName, dialogName,
-    tbodyElementId) {
-    clearMaintainMessage(baseDialogName);
-    clearMaintainMessage(dialogName);
-    $('#' + tbodyElementId).empty();
-    let rowElement = buttonElement.parentNode.parentNode;
-    let itemId = rowElement.getAttribute("data-id");
-    let url = url_start + '/' + itemId + '/' + URL_TEAM_END;
-    // get name from first data cell in row.
-    let itemName = rowElement.firstChild.firstChild.nodeValue;
-    openMaintainTeamDialog(itemName, url, dialogName);
-}
-
-/**
- * Opens the team maintenance dialog.
- * Display the old item name and store its database id number.
- */
-function openMaintainTeamDialog(itemName, teamUrl, dialogName) {
-    // access openDialog via leagueExports to allow 'mocha' to stub it out.
-    let dialog = openDialog(dialogName);
-    setUpMaintainTeamForm(itemName, teamUrl, 'team');
-}
-
-/**
- * Called when Maintain Team dialog is opened.
- *
- * Loads the clubs from the server into the table.
- *
- * Assigns the openCreateItemDialog function to the create button.
- *
- * Uses the class selector to assign the validateInput function to the
- * input field on each dialog.
- *
- * Sets up the events on the three dialogs create, update and delete.
+ * itemName - Name of club for which teams are being accessed,
+ *            used in table header.
+ * urlEnd - URL used to retrive/update teams from server.
+ * item - item being accessed i.e. 'team'.
  */
 function setUpMaintainTeamForm(itemName, urlEnd, item) {
-    document.getElementById('dialog-club').innerHTML = itemName;
+    document.getElementById(DIALOG_TEAM_HEADER).innerHTML = itemName;
     getTeamsForTable(undefined, urlEnd, item);
 
     setUpDialogButtons(DIALOG_CREATE_CLUB_TEAM, DIALOG_TEAM_MAINTENANCE,
@@ -216,7 +188,7 @@ function setUpMaintainTeamForm(itemName, urlEnd, item) {
         updateItemOnServer, urlEnd, 'updated', item, reloadTeamsFromServer);
 
     setUpDeleteDialogButtons(DIALOG_DELETE_CLUB_TEAM, DIALOG_TEAM_MAINTENANCE,
-        deleteItemOnServer, urlEnd, item, reloadTeamsFromServer);
+        deleteItemOnServer, urlEnd, 'deleted', item, reloadTeamsFromServer);
 
 }
 

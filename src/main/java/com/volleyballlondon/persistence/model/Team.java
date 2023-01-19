@@ -26,6 +26,9 @@ public class Team {
 	@Column(name = "club_id")
 	private Long clubId;
 
+	@Column(name = "league_id")
+	private Long leagueId;
+
 	public Team() {
 	}
 

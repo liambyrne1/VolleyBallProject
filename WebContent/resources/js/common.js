@@ -17,18 +17,36 @@ let hiddenHandle;
 /* Keeps a list of the opened dialogs, in the order in which they were opened. */
 const openedDialogs = [];
 
+/**
+ * The URL end part that relates to the team processing.
+ */
+ const URL_TEAM_END = 'teams';
+
+/**
+ * Identifies the header in the team table.
+ */
+ const DIALOG_TEAM_HEADER = 'dialog-team-header';
+
+/**
+ * Identifies a name holder on a form, either for a club or league name.
+ */
+const DIALOG_OBJECT_NAME = 'dialog-object-name';
+
 /* Set up dialog button Code Section. */
 
 /**
  * Sets up the dialog buttons on the create/update dialogs. Both dialogs
  * have embedded forms, and are activated by the form submit button,
  *
- * Pass the form element to the submit function as an event data parameter.
+ * Passes the form element to the submit function as an event data parameter.
  *
- * Assign a function to the submit button, the parameter pass into this
+ * Assigns a function to the submit button, the parameter pass into this
  * function.
  *
- * Assign the 'cancelDialog' function to the cancel button.
+ * Assigns an input event to the input field of the dialog. The event calls the
+ * validateInput function.
+ *
+ * Assigns the 'cancelDialog' function to the cancel button.
  *
  * Parameters.
  *
@@ -78,11 +96,12 @@ function setUpDialogButtons(dialogName, baseDialogName, serverFunction, urlStem,
  * baseDialogName - The dialog from which the above dialog is propagated from.
  * Function assigned to delete button.
  * URL stem that identifies the URL to be used.
+ * Action taken 'deleted'/'removed'.
  * Item being updated, league/club/team.
  * Function to be used to reload the items into the table.
  */
 function setUpDeleteDialogButtons(dialogName, baseDialogName, serverFunction, urlStem,
-    item, reloadTableFunction) {
+    action, item, reloadTableFunction) {
     let dialog = document.getElementById(dialogName);
     
     let deleteButtonElement =
@@ -91,6 +110,7 @@ function setUpDeleteDialogButtons(dialogName, baseDialogName, serverFunction, ur
     let parameters = {'dialog' : dialog,
                       'baseDialogName' : baseDialogName,
                       'urlStem' : urlStem,
+                      'action' : action,
                       'item' : item,
                       'reloadTableFunction' : reloadTableFunction};
     $(deleteButtonElement).click(parameters, serverFunction);
@@ -144,6 +164,74 @@ function getItemsFromServer(newScrollPosition, displayItemsFunction,
 
 /**
  * Invoked after a successful read request.
+ * Displays a text field and one button field in each row of the table.
+ *
+ * Parameters.
+ *
+ * Data from server.
+ * Initial scroll position of table when displayed.
+ * Item being updated, league/club/team.
+ * dialogName - The opened dialog.
+ *              This is required to display the 'no items' message.
+ * id of tbody element, position to display the table.
+ * Button 1 text
+ * Button 1 function
+ */
+function displayItemsInTextAnd1ButtonTable(dataArr, newScrollPosition, item,
+    dialogName, tbodyElementId, button1Text, button1Function) {
+    let errorMessage = 'No ' + item + 's exist.';
+
+    if (dataArr.length == 0) {
+        displayMaintainMessage(dialogName, errorMessage);
+    } else {
+        displayTextAnd1ButtonTable(dataArr, newScrollPosition,
+            tbodyElementId, button1Text, button1Function);
+    }
+}
+
+/**
+ * Displays a text field and one button field in each row of the table.
+ * Displays the items in the table. Positions the scrollbar,
+ * so that the item name in 'newScrollPosition', is displayed
+ * at the top of the table.
+ * 'newScrollPosition' is undefined when items are loaded for the first
+ * time, screen initialisation. Use the first item returned from server.
+ *
+ * Parameters.
+ *
+ * Data from server.
+ * Initial scroll position of table when displayed.
+ * id of tbody element, position to display the table.
+ * Button 1 text
+ * Button 1 function
+ */
+function displayTextAnd1ButtonTable(dataArr, newScrollPosition,
+    tbodyElementId, button1Text, button1Function) {
+    let tbodyElement = document.getElementById(tbodyElementId);
+    let index;
+    let rowElement;
+    let newScrollElementPosition;
+
+    if (newScrollPosition == undefined) {
+        newScrollPosition = dataArr[0].name;
+    }
+
+    for (index = 0; index < dataArr.length; index++) {
+        rowElement = createTextAnd1ButtonRowElement(dataArr[index],
+            button1Text, button1Function);
+        if (newScrollPosition.localeCompare(dataArr[index].name) == 0) {
+            newScrollElementPosition = rowElement;
+        }
+        tbodyElement.appendChild(rowElement);
+    }
+
+    let scrollPosition = $(newScrollElementPosition).position();
+    $(tbodyElement).scrollTop(scrollPosition.top - SCROLL_ADJUSTMENT);
+}
+
+/**
+ * Invoked after a successful read request.
+ * Displays a text field and two button fields in each row of the table.
  *
  * Parameters.
  *
@@ -157,12 +245,10 @@ function getItemsFromServer(newScrollPosition, displayItemsFunction,
  * Button 1 function
  * Button 2 text
  * Button 2 function
- * Button 3 text
- * Button 3 function
  */
 function displayItemsInTextAnd2ButtonTable(dataArr, newScrollPosition, item,
     dialogName, tbodyElementId, button1Text, button1Function, button2Text,
-    button2Function, button3Text, button3Function) {
+    button2Function) {
     let errorMessage = 'No ' + item + 's exist.';
 
     if (dataArr.length == 0) {
@@ -170,12 +256,13 @@ function displayItemsInTextAnd2ButtonTable(dataArr, newScrollPosition, item,
     } else {
         displayTextAnd2ButtonTable(dataArr, newScrollPosition,
             tbodyElementId, button1Text, button1Function,
-            button2Text, button2Function, button3Text, button3Function);
+            button2Text, button2Function);
     }
 }
 
 /**
- * Display the items in the table. Position the scrollbar,
+ * Displays a text field and two button fields in each row of the table.
+ * Displays the items in the table. Positions the scrollbar,
  * so that the item name in 'newScrollPosition', is displayed
  * at the top of the table.
  * 'newScrollPosition' is undefined when items are loaded for the first
@@ -190,12 +277,9 @@ function displayItemsInTextAnd2ButtonTable(dataArr, newScrollPosition, item,
  * Button 1 function
  * Button 2 text
  * Button 2 function
- * Button 3 text
- * Button 3 function
  */
 function displayTextAnd2ButtonTable(dataArr, newScrollPosition,
-    tbodyElementId, button1Text, button1Function, button2Text, button2Function,
-    button3Text, button3Function) {
+    tbodyElementId, button1Text, button1Function, button2Text, button2Function) {
     let tbodyElement = document.getElementById(tbodyElementId);
     let index;
     let rowElement;
@@ -207,8 +291,7 @@ function displayTextAnd2ButtonTable(dataArr, newScrollPosition,
 
     for (index = 0; index < dataArr.length; index++) {
         rowElement = createTextAnd2ButtonRowElement(dataArr[index],
-            button1Text, button1Function, button2Text, button2Function,
-            button3Text, button3Function);
+            button1Text, button1Function, button2Text, button2Function);
         if (newScrollPosition.localeCompare(dataArr[index].name) == 0) {
             newScrollElementPosition = rowElement;
         }
@@ -220,37 +303,8 @@ function displayTextAnd2ButtonTable(dataArr, newScrollPosition,
 }
 
 /**
- * Creates a row of a table with 4 data cells. The first cell holds data,
- * the remaining three cells hold buttons.
- * Store the data id in the 'data-id' attribute of the row.
- *
- * Parameters.
- *
- * Data
- * Button 1 text
- * Button 1 function
- * Button 2 text
- * Button 2 function
- * Button 3 text
- * Button 3 function
- */
-function createTextAnd2ButtonRowElement(data, button1Text, button1Function,
-        button2Text, button2Function, button3Text, button3Function) {
-    let rowElement = document.createElement("tr");
-    rowElement.setAttribute("data-id", data.id.toString());
-
-    let cellElement = createDescriptionCellElement(data.name);
-    rowElement.appendChild(cellElement);
-    cellElement = createButtonCellElement(button1Text, button1Function);
-    rowElement.appendChild(cellElement);
-    cellElement = createButtonCellElement(button2Text, button2Function);
-    rowElement.appendChild(cellElement);
-
-    return rowElement;
-}
-
-/**
  * Invoked after a successful read request.
+ * Displays a text field and three button fields in each row of the table.
  *
  * Parameters.
  *
@@ -282,7 +336,8 @@ function displayItemsInTextAnd3ButtonTable(dataArr, newScrollPosition, item,
 }
 
 /**
- * Display the items in the table. Position the scrollbar,
+ * Displays a text field and three button fields in each row of the table.
+ * Displays the items in the table. Positions the scrollbar,
  * so that the item name in 'newScrollPosition', is displayed
  * at the top of the table.
  * 'newScrollPosition' is undefined when items are loaded for the first
@@ -327,7 +382,58 @@ function displayTextAnd3ButtonTable(dataArr, newScrollPosition,
 }
 
 /**
- * Creates a row of a table with 4 data cells. The first cell holds data,
+ * Creates a row of a table with 2 data cells. The first cell holds text,
+ * the second cell holds a button.
+ * Store the data id in the 'data-id' attribute of the row.
+ *
+ * Parameters.
+ *
+ * Data
+ * Button 1 text
+ * Button 1 function
+ */
+function createTextAnd1ButtonRowElement(data, button1Text, button1Function) {
+    let rowElement = document.createElement("tr");
+    rowElement.setAttribute("data-id", data.id.toString());
+
+    let cellElement = createDescriptionCellElement(data.name);
+    rowElement.appendChild(cellElement);
+    cellElement = createButtonCellElement(button1Text, button1Function);
+    rowElement.appendChild(cellElement);
+
+    return rowElement;
+}
+
+/**
+ * Creates a row of a table with 3 data cells. The first cell holds text,
+ * the remaining two cells hold buttons.
+ * Store the data id in the 'data-id' attribute of the row.
+ *
+ * Parameters.
+ *
+ * Data
+ * Button 1 text
+ * Button 1 function
+ * Button 2 text
+ * Button 2 function
+ */
+function createTextAnd2ButtonRowElement(data, button1Text, button1Function,
+        button2Text, button2Function) {
+    let rowElement = document.createElement("tr");
+    rowElement.setAttribute("data-id", data.id.toString());
+
+    let cellElement = createDescriptionCellElement(data.name);
+    rowElement.appendChild(cellElement);
+    cellElement = createButtonCellElement(button1Text, button1Function);
+    rowElement.appendChild(cellElement);
+    cellElement = createButtonCellElement(button2Text, button2Function);
+    rowElement.appendChild(cellElement);
+
+    return rowElement;
+}
+
+/**
+ * Creates a row of a table with 4 data cells. The first cell holds text,
  * the remaining three cells hold buttons.
  * Store the data id in the 'data-id' attribute of the row.
  *
@@ -701,6 +807,7 @@ function openDeleteItemDialog(dialogName, itemId, deleteItemName, newScrollPosit
  * baseDialogName - The dialog from which the above dialog is propagated from.
  * URL stem that identifies the URL to be used.
  * Item being created, league/club/team.
+ * Action taken 'deleted'/'removed'.
  * Function to be used to reload the items into the table.
  */
 function deleteItemOnServer(event) {
@@ -708,6 +815,7 @@ function deleteItemOnServer(event) {
     let baseDialogName = event.data.baseDialogName;
     let url = event.data.urlStem;
     let item = event.data.item;
+    let action = event.data.action;
     let reloadTableFunction = event.data.reloadTableFunction;
     let spanElement = dialog.getElementsByClassName('dialog-object-name')[0];
     let deleteItemName = spanElement.innerHTML;
@@ -721,7 +829,7 @@ function deleteItemOnServer(event) {
         error: serverFailure,
         success: function (result, status, xhr) {
                     serverSuccessDelete(result, dialog, baseDialogName, deleteItemName,
-                        newScrollPosition, url, item, reloadTableFunction);
+                        newScrollPosition, url, item, action, reloadTableFunction);
                 },
         type: "DELETE",
         url: url + '/' + itemId
@@ -742,26 +850,90 @@ function deleteItemOnServer(event) {
  * Scroll position to be used in table after a successful request.
  * URL to be used in the reload table function.
  * Item being processed, league/club/team.
+ * Action taken 'deleted'/'removed'.
  * Function to be used to reload the items into the table.
  */
 function serverSuccessDelete(result, dialog, baseDialogName, deleteItemName,
-    newScrollPosition, url, item, reloadTableFunction) {
-    let message = deleteItemName + ' has been deleted.'
+    newScrollPosition, url, item, action, reloadTableFunction) {
+    let message = deleteItemName + ' has been ' + action + '.'
 
     reloadTableFunction(newScrollPosition, url, item);
     cancelDialog(dialog);
     displayMaintainMessage(baseDialogName, message);
 }
 
+/* Maintain Team Code Section. */
+
+/**
+ * Invoked by team button in the leagues or clubs table.
+ * Team button is in third data cell of row.
+ * Retrieves the item id and name from the table.
+ * Constructs the teams url.
+ * Opens the teams dialog.
+ *
+ * Parameters
+ *
+ * buttonElement - Button element which invoked the action, defining row.
+ * url_start - Start of URL to list the teams in the table. The club id has
+ *             appended to this string.
+ * baseDialogName - The dialog from which the below dialog is propagated from.
+ *                  This is required to clear the main maintenance message
+ *                  on the previous dialog.
+ * dialogName - The dialog which is being opened.
+ * tbodyElementId - id of tbody element in the teams form,
+ *                  used to clear the previous data in the table.
+ * setUpMaintainTeamFunction - function to set up the maintain team form.
+ */
+function maintainTeams(buttonElement, url_start, baseDialogName, dialogName,
+    tbodyElementId, setUpMaintainTeamFunction) {
+    clearMaintainMessage(baseDialogName);
+    clearMaintainMessage(dialogName);
+    $('#' + tbodyElementId).empty();
+    let rowElement = buttonElement.parentNode.parentNode;
+    let itemId = rowElement.getAttribute("data-id");
+    let url = url_start + '/' + itemId + '/' + URL_TEAM_END;
+    // get name from first data cell in row.
+    let itemName = rowElement.firstChild.firstChild.nodeValue;
+    openMaintainTeamDialog(itemName, url, dialogName, setUpMaintainTeamFunction,
+        itemId);
+}
+
+/**
+ * Opens the team maintenance dialog.
+ *
+ * Parameters
+ *
+ * itemName - Name of club or league for which teams are being accessed.
+ * teamUrl - URL used to retrive/update teams from server.
+ * dialogName - The dialog which is being opened.
+ * setUpMaintainTeamFunction - function to set up the maintain team form.
+ * itemId - id of club or league for which teams are being accessed.
+ */
+function openMaintainTeamDialog(itemName, teamUrl, dialogName, setUpMaintainTeamFunction,
+    itemId) {
+    // access openDialog via leagueExports to allow 'mocha' to stub it out.
+    let dialog = openDialog(dialogName);
+    setUpMaintainTeamFunction(itemName, teamUrl, 'team', itemId);
+}
+
 /* Common Code Section. */
+
 /**
  * Opens a new dialog.
+ *
+ * Removes the Escape key shortcut from the close button on the main page.
+ * If this was not done, the Escape key would close the main page as well as
+ * the dialog.
+ *
  * Make sure that no element outside of the dialog
  * can be interacted with while the dialog is visible.
  */
 function openDialog(dialogName) {
     disengagePreviousDialog();
     openedDialogs.push(dialogName);
+    if (openedDialogs.length == 1) {
+        document.removeEventListener('keydown', assignEscapeToCloseButton);
+    }
 
     let dialog = document.getElementById(dialogName);
 
@@ -829,8 +1001,14 @@ function cancelDialogViaButton(event) {
 }
 
 /**
- * Close a dialog. Undo disabling elements outside of the dialog.
+ * Closes a dialog. Undo disabling elements outside of the dialog.
  * Engage the previous dialog, if there is one.
+ *
+ * Re-assigns the Escape key shortcut to the close button on the main page
+ * if no dialogs are opened. A time interval is required. Otherwise the Escape
+ * key that closes the dialog, will also close the main page.
+ *
+ * dialog - The dialog 'element' to be closed.
  */
 function cancelDialog(dialog) {
 
@@ -849,6 +1027,12 @@ function cancelDialog(dialog) {
     dialog.hidden = true;
 
     openedDialogs.pop();
+    let elementInterval = setInterval(function() {
+        if (openedDialogs.length == 0) {
+            document.addEventListener('keydown', assignEscapeToCloseButton);
+        }
+        clearInterval(elementInterval);
+    }, 0);
     engagePreviousDialog();
 
 }
@@ -998,6 +1182,19 @@ function findMaintainMessageElement() {
 }
 
 /**
+ * Sets up the cancel event on a given dialog.
+ * Attaches the cancelDialogViaButton function to the cancel button.
+ *
+ * dialogName - Name of dialog to set cancel event on.
+ */
+function setUpCancelEvent(dialogName) { 
+    let dialog = document.getElementById(dialogName);
+    let cancelButtonElement = dialog.getElementsByClassName('dialog-cancel-button')[0];
+    let parameters = {'dialog' : dialog};
+    $(cancelButtonElement).click(parameters, cancelDialogViaButton);
+}
+
+/**
  * Bound to a server error response
  * Display the error message on console.
  */
@@ -1007,5 +1204,27 @@ function serverFailure(jqXhr, textStatus, errorThrown){
     console.log( 'jqXhr.status = ' + jqXhr.status );
     console.log( 'jqXhr.statusText = ' + jqXhr.statusText );
     console.log('jqXhr.responseText = ' + jqXhr.responseText );
+}
+
+/**
+ * Assigns the Escape key to the Close button on the main Maintenance
+ * web page.
+ * A time interval has to be set. This avoids getting an NS_BINDING_ABORTED error
+ * on FireFox.
+ */
+function assignEscapeToCloseButton(event) {
+    let elementInterval = setInterval(function() {
+        if (event.key == "Escape") {
+            gotoAdminLoginPage(event);
+        }
+        clearInterval(elementInterval);
+    }, 0);
+}
+
+/**
+ * Takes user back to Admin Login Page.
+ */
+function gotoAdminLoginPage(event) {
+    document.location = 'adminloginpage';
 }
 

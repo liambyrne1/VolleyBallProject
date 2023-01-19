@@ -25,8 +25,14 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 public class UserEntity {
 
 	@Id
-	@Column(name = "username")
-	private String userName;
+	@Column(name = "email")
+	private String email;
+
+	@Column(name = "first_name")
+	private String firstName;
+
+	@Column(name = "last_name")
+	private String lastName;
 
 	@Column(name = "password")
 	private String password;
@@ -37,7 +43,7 @@ public class UserEntity {
 	@ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
 	@JoinTable(
 			name = "users_roles",
-			joinColumns = @JoinColumn(name = "username"),
+			joinColumns = @JoinColumn(name = "email"),
 			inverseJoinColumns = @JoinColumn(name = "role_id")
 			)
 	private Set<Role> roles = new HashSet<>(); 
@@ -45,13 +51,29 @@ public class UserEntity {
 	public UserEntity() {
 	}
 
-	public String getUserName() {
-		return userName;
-	}
+    public String getFirstName() {
+        return firstName;
+    }
 
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
 	public String getPassword() {
 		return password;
@@ -75,7 +97,7 @@ public class UserEntity {
 
 	@Override
 	public String toString() {
-		return "User{" + "userName=" + userName + ", password=" + password + "}";
+		return "User{" + "email=" + email + ", password=" + password + "}";
 	}
 
     public Collection<? extends GrantedAuthority> getAuthorities() {

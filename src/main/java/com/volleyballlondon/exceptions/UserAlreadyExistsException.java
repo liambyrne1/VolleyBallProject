@@ -5,7 +5,7 @@ package com.volleyballlondon.exceptions;
  */
 public class UserAlreadyExistsException extends VolleyballException {
 
-    public static final String ERROR_MESSAGE1 = "User  ";
+    public static final String ERROR_MESSAGE1 = "Email  ";
     public static final String ERROR_MESSAGE2 = "  already exists.";
 
     /**

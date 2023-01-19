@@ -4,21 +4,57 @@ package com.volleyballlondon.web.dto;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-public class UserDto {
-    @Size(min = 1, message = "User Name is Required")
-    @Pattern(regexp="^[a-zA-Z0-9 ]+",
-        message = "User Name can only be letters, numbers or spaces")  
-    private String username;
+import com.volleyballlondon.web.validation.annotation.PasswordMatches;
+import com.volleyballlondon.web.validation.annotation.ValidEmail;
 
-    @Size(min = 1, message = "Password is Required")
+@PasswordMatches
+public class UserDto {
+    @Size(min = 1, message = "First Name is Required.")
+    @Size(max = 30, message = "First Name can only be 30 characters or less.")
+    @Pattern(regexp="^[a-zA-Z]+",
+        message = "First Name can only be letters.")  
+    private String firstName;
+
+    @Size(min = 1, message = "Last Name is Required.")
+    @Size(max = 30, message = "Last Name can only be 30 characters or less.")
+    @Pattern(regexp="^[a-zA-Z]+",
+        message = "Last Name can only be letters.")  
+    private String lastName;
+
+    @Size(min = 1, message = "Email is Required.")
+    @ValidEmail
+    private String email;
+
+    @Size(min = 1, message = "Password is Required.")
+    @Size(min = 8, message = "Password has to be between 8 - 25 characters.")
+    @Size(max = 25, message = "Password has to be between 8 - 25 characters.")
     private String password;
 
-    public String getUsername() {
-        return username;
+    @Size(min = 1, message = "Confirmation is Required.")
+    private String matchingPassword;
+
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setUsername(final String username) {
-        this.username = username;
+    public void setFirstName(final String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(final String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(final String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -29,11 +65,19 @@ public class UserDto {
         this.password = password;
     }
 
+    public String getMatchingPassword() {
+        return matchingPassword;
+    }
+
+    public void setMatchingPassword(final String matchingPassword) {
+        this.matchingPassword = matchingPassword;
+    }
+
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
-        builder.append("UserDto [username=")
-                .append(username)
+        builder.append("UserDto [email=")
+                .append(email)
                 .append(", password=")
                 .append(password)
                 .append("]");
@@ -48,7 +92,7 @@ public class UserDto {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((password == null) ? 0 : password.hashCode());
-        result = prime * result + ((username == null) ? 0 : username.hashCode());
+        result = prime * result + ((email == null) ? 0 : email.hashCode());
         return result;
     }
 
@@ -74,11 +118,11 @@ public class UserDto {
         } else if (!password.equals(other.password)) {
             return false;
         }
-        if (username == null) {
-            if (other.username != null) {
+        if (email == null) {
+            if (other.email != null) {
                 return false;
             }
-        } else if (!username.equals(other.username)) {
+        } else if (!email.equals(other.email)) {
             return false;
         }
         return true;

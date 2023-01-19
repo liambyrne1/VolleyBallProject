@@ -16,6 +16,7 @@ import com.volleyballlondon.persistence.services.LeagueDbService;
 @EnableWebMvc
 @Configuration
 @ComponentScan(basePackages = {"com.volleyballlondon.security",
+                               "com.volleyballlondon.security.controller",
                                "com.volleyballlondon.dev",
                                "com.volleyballlondon.dev.validator"})
 public class WebMvcConfig implements WebMvcConfigurer {

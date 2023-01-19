@@ -14,6 +14,8 @@ public interface TeamRepository<M> extends CrudRepository<Team, Long> {
 
     List<M> findByClubIdOrderByName(Long clubId);
 
+    List<M> findByLeagueIdOrderByName(Long leagueId);
+
     List<M> findByNameIgnoreCase(String name);
 
     List<M> findByOrderByName();
@@ -24,4 +26,16 @@ public interface TeamRepository<M> extends CrudRepository<Team, Long> {
     @Query("update Team t set t.name = :teamName where t.id = :teamId")
     int updateTeamName(@Param("teamId") Long teamId,
         @Param("teamName") String teamName);
+
+    /**
+     * Updates the leagueId field in the team table.
+     *
+     * @param teamId Identifies the team table.
+     * @param teamLeagueId New value for the leagueId field.
+     */
+    @Modifying
+    @Query("update Team t set t.leagueId = :teamLeagueId where t.id = :teamId")
+    int updateTeamLeagueId(@Param("teamId") Long teamId,
+        @Param("teamLeagueId") Long teamLeagueId);
+
 }

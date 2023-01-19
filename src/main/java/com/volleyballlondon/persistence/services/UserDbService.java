@@ -32,17 +32,10 @@ public class UserDbService {
     }
 
     /**
-     * Finds a User by the given user name
-     */
-	public UserEntity findByUsername(String name) {
-		return userRepository.findByUserName(name);
-	}
-
-    /**
      * Finds a User by the given id
      */
-	public Optional<UserEntity> getById(String username) {
-		return userRepository.findById(username);
+	public Optional<UserEntity> getById(String email) {
+		return userRepository.findById(email);
 	}
 
     /**
@@ -57,12 +50,14 @@ public class UserDbService {
 	public boolean registerNewUserAccount(UserDto userDto, String roleString)
         throws UserAlreadyExistsException {
         
-        if (userNameExists(userDto.getUsername())) {
-            throw new UserAlreadyExistsException(userDto.getUsername());
+        if (emailExists(userDto.getEmail())) {
+            throw new UserAlreadyExistsException(userDto.getEmail());
         }
 
         UserEntity userEntity = new UserEntity();    
-        userEntity.setUserName(userDto.getUsername());
+        userEntity.setFirstName(userDto.getFirstName());
+        userEntity.setLastName(userDto.getLastName());
+        userEntity.setEmail(userDto.getEmail());
         userEntity.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
         Role role = roleRepository.findByName(roleString);
@@ -74,7 +69,7 @@ public class UserDbService {
     /**
      * Returns true if user exists on the database.
      */
-    private boolean userNameExists(String username) {
-        return getById(username).isPresent();
+    private boolean emailExists(String email) {
+        return getById(email).isPresent();
     }
 }

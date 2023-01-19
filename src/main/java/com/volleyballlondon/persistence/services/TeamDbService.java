@@ -35,11 +35,10 @@ public class TeamDbService {
 	}
 
     /**
-     * Returns all the columns of each team on the database
-     * ordered alphabetically by name.
+     * Finds a Team by the given id
      */
-	public List<Team> findByOrderByName() {
-		return (List<Team>) teamRepository.findByOrderByName();
+	public Optional<Team> getById(Long id) {
+		return teamRepository.findById(id);
 	}
 
     /**
@@ -57,13 +56,6 @@ public class TeamDbService {
 	}
 
     /**
-     * Finds a Team by the given club id.
-     */
-	public List<Team> findByClubIdOrderByName(Long clubId) {
-		return teamRepository.findByClubIdOrderByName(clubId);
-	}
-
-    /**
      * Finds a Team by the given name but ignoring the case
      */
 	public List<Team> findByNameIgnoreCase(String name) {
@@ -71,10 +63,25 @@ public class TeamDbService {
 	}
 
     /**
-     * Finds a Team by the given id
+     * Returns all the columns of each team on the database
+     * ordered alphabetically by name.
      */
-	public Optional<Team> getById(Long id) {
-		return teamRepository.findById(id);
+	public List<Team> findByOrderByName() {
+		return (List<Team>) teamRepository.findByOrderByName();
+	}
+
+    /**
+     * Finds Teams by the given club id.
+     */
+	public List<Team> findByClubIdOrderByName(Long clubId) {
+		return teamRepository.findByClubIdOrderByName(clubId);
+	}
+
+    /**
+     * Finds Teams by the given league id.
+     */
+	public List<Team> findByLeagueIdOrderByName(Long leagueId) {
+		return teamRepository.findByLeagueIdOrderByName(leagueId);
 	}
 
     /**
@@ -92,6 +99,31 @@ public class TeamDbService {
 	public void deleteTeam(Long teamId) {
 		teamRepository.deleteById(teamId);
 	}
+
+    /**
+     * Removes a team from a league by setting the leagueId field in the team
+     * table on the database to null.
+     * 
+     * @param teamId Id of the team that is being removed.
+     *
+     */
+     @Transactional
+     public int removeTeamFromLeague(Long teamId) {
+        return teamRepository.updateTeamLeagueId(teamId, null);
+     }
+
+    /**
+     * Adds a team to a league by setting the leagueId field in the team
+     * table to the Id of the league.
+     * 
+     * @param teamId Id of the team that is being updated.
+     * @param leagueId Id of league, team is being associated to.
+     *
+     */
+     @Transactional
+     public int addTeamToLeague(Long teamId, Long leagueId) {
+        return teamRepository.updateTeamLeagueId(teamId, leagueId);
+     }
 
     /**
      * Adds a new Team with the given name

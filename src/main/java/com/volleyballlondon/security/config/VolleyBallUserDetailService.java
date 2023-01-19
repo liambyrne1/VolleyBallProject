@@ -44,7 +44,7 @@ public class VolleyBallUserDetailService implements UserDetailsService {
         }
 
         UserDetails user = new User(
-            userEntity.getUserName(),
+            userEntity.getEmail(),
             userEntity.getPassword(),
             userEntity.getAuthorities());
 

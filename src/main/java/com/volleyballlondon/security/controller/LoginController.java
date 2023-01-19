@@ -66,7 +66,7 @@ public class LoginController
     }
 
     /**
-     * Called after a successful league.
+     * Called after a successful login.
      * Returns the screen depending on the user's role.
      */
 	@GetMapping("/loginSuccess")
@@ -103,4 +103,13 @@ public class LoginController
         }
         return returnView;
     }
+
+    /**
+     * Returns the Admin Login Page.
+     */
+    @GetMapping("/adminloginpage")
+    public String showAdminLoginPage() {
+        return ADMIN_LOGIN_PAGE;
+    }
+
 }

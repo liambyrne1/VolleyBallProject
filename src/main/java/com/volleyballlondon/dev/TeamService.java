@@ -63,15 +63,17 @@ public class TeamService extends VolleyballService {
     public static final String JSON_MESSAGE_SUCCESS_DELETED
         = " has been deleted.";
 
+    public static final String JSON_MESSAGE_SUCCESS_ADDED_TEAMS
+        = "Teams have been added to league.";
+
     /**
      * Returns all the teams of a given club from the database in alphabetical order.
-     * Do not allow Eclipse to generate this test case. Remove '@'
-     * should get all team of a given club
+     * should get all teams of a given club
      */
     @GetMapping(path = "/club/{clubid}/teams",
         produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<Team> getTeamsOfClub(@PathVariable("clubid") long clubId){
+    public List<Team> getTeamsForClub(@PathVariable("clubid") long clubId){
         List<Team> teams = new ArrayList<>();
         try {
             teams = teamDbService.findByClubIdOrderByName(clubId);
@@ -199,4 +201,91 @@ public class TeamService extends VolleyballService {
 
         return response.toString();
     }
+
+    /**
+     * Returns all the teams of a given league from the database in alphabetical order.
+     * If leagueid = 0 return all teams not associated to a league. i.e.  where
+     * league_id = null on the teams table of the database.
+     *
+     * should get all teams of a given league
+     */
+    @GetMapping(path = "/league/{leagueid}/teams",
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public List<Team> getTeamsForLeague(@PathVariable("leagueid") Long leagueId){
+        List<Team> teams = new ArrayList<>();
+
+        if (leagueId == 0) {
+            leagueId = null;
+        }
+
+        try {
+            teams = teamDbService.findByLeagueIdOrderByName(leagueId);
+        } catch (Exception e) {
+            logException(e);
+        }
+        return teams;
+    }
+
+    /**
+     * Removes a team from a league by setting the leagueId field in the team
+     * table on the database to null.
+     * 
+     * @param teamId Id of the team that is being removed.
+     *
+     * @return returns the following responses:- success Team has been deleted
+     *         failure Volleyball server is unavailable
+     *
+     */    
+    @DeleteMapping(path = "/league/{leagueid}/teams/{teamid}",
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String removeTeamFromLeague(@PathVariable("teamid") long teamId){
+        JSONObject response = new JSONObject();
+        try {
+            teamDbService.removeTeamFromLeague(teamId);
+            response.put(JSON_STATUS, JSON_STATUS_SUCCESS);
+            response.put(JSON_MESSAGE, JSON_MESSAGE_SUCCESS_DELETED);
+        } catch (Exception e) {
+            logException(e);
+            response.put(JSON_STATUS, JSON_STATUS_FAILURE);
+            response.put(JSON_MESSAGE, JSON_MESSAGE_UNAVAILABLE);
+        }
+
+        return response.toString();
+    }
+
+    /**
+     * Adds a set of teams to a league by setting the leagueId field in the team
+     * table.
+     * 
+     * @param teamsString A comma separated string of team Ids.
+     *
+     * @return returns the following responses:- success Team has been deleted
+     *         failure Volleyball server is unavailable
+     *
+     */    
+    @PutMapping(path = "/league/{leagueid}/teams/{teamsString}",
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String addTeamsToLeague(@PathVariable("leagueid") Long leagueId,
+        @PathVariable("teamsString") String teamsString){
+        JSONObject response = new JSONObject();
+
+        String[] teamIds = teamsString.split(",");
+        try {
+            for (String teamId : teamIds) {
+                teamDbService.addTeamToLeague(Long.parseLong(teamId), leagueId);
+            }
+            response.put(JSON_STATUS, JSON_STATUS_SUCCESS);
+            response.put(JSON_MESSAGE, JSON_MESSAGE_SUCCESS_ADDED_TEAMS);
+        } catch (Exception e) {
+            logException(e);
+            response.put(JSON_STATUS, JSON_STATUS_FAILURE);
+            response.put(JSON_MESSAGE, JSON_MESSAGE_UNAVAILABLE);
+        }
+
+        return response.toString();
+    }
+
 }

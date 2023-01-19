@@ -91,7 +91,7 @@ public class RegistrationController {
         try {
             userDbService.registerNewUserAccount(userDto, Role.USER);
 
-            securityService.autoLogin(userDto.getUsername(), userDto.getPassword());
+            securityService.autoLogin(userDto.getEmail(), userDto.getPassword());
 
             System.out.println("Successfully authenticated. Security context contains: " 
                 + SecurityContextHolder.getContext().getAuthentication());
