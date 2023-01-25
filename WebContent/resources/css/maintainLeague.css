@@ -111,6 +111,10 @@ tbody td:last-child, thead th:last-child {
   color: green;
 }
 
+#dialog-update-item-name section {
+  height: 35%;
+}
+
 #dialog-update-item-name footer,
 #dialog-create-item footer,
 #dialog-delete-item footer {

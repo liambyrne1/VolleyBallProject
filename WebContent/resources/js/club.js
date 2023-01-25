@@ -67,6 +67,37 @@
  const URL_TEAM_START = 'club';
 
 /**
+ * Function assigned to update button on the club maintenance table.
+ */
+const CLUB_UPDATE_FUNCTION =
+    'updateItemName(this, DIALOG_UPDATE_ITEM_NAME, DIALOG_CLUB_MAINTENANCE)';
+
+/**
+ * Function assigned to delete button on the club maintenance table.
+ */
+const CLUB_DELETE_FUNCTION =
+    'deleteItem(this, DIALOG_DELETE_ITEM, DIALOG_CLUB_MAINTENANCE)';
+
+/**
+ * Function assigned to team button on the club maintenance table.
+ */
+const CLUB_TEAM_FUNCTION =
+    'maintainTeams(this, URL_TEAM_START, DIALOG_CLUB_MAINTENANCE, ' +
+        'DIALOG_TEAM_MAINTENANCE, TEAM_LIST, setUpMaintainTeamForm)';
+
+/**
+ * Function assigned to update button on the club team maintenance table.
+ */
+const CLUB_TEAM_UPDATE_FUNCTION =
+    'updateItemName(this, DIALOG_UPDATE_CLUB_TEAM_NAME, DIALOG_TEAM_MAINTENANCE)';
+
+/**
+ * Function assigned to delete button on the club team maintenance table.
+ */
+const CLUB_TEAM_DELETE_FUNCTION =
+    'deleteItem(this, DIALOG_DELETE_CLUB_TEAM, DIALOG_TEAM_MAINTENANCE)';
+
+/**
  * Correction for scroll position in the table.
  * The JQuery .position() method returns the position of a element relative to
  * the offset parent, in this case the tbody element relative to the table element.
@@ -124,11 +155,9 @@ function setUpMaintainClubDocument() {
 function getClubsForTable(newScrollPosition, urlEnd, item) {
     getItemsFromServer(newScrollPosition, displayItemsInTextAnd3ButtonTable,
         urlEnd, item, DIALOG_CLUB_MAINTENANCE, CLUB_LIST,
-        'Update', 'updateItemName(this, DIALOG_UPDATE_ITEM_NAME, ' +
-            'DIALOG_CLUB_MAINTENANCE)',
-        'Delete', 'deleteItem(this, DIALOG_DELETE_ITEM, DIALOG_CLUB_MAINTENANCE)',
-        'Team', 'maintainTeams(this, URL_TEAM_START, DIALOG_CLUB_MAINTENANCE, ' +
-            'DIALOG_TEAM_MAINTENANCE, TEAM_LIST, setUpMaintainTeamForm)');
+        'Update', CLUB_UPDATE_FUNCTION,
+        'Delete', CLUB_DELETE_FUNCTION,
+        'Team', CLUB_TEAM_FUNCTION);
 }
 
 /**
@@ -138,8 +167,8 @@ function getClubsForTable(newScrollPosition, urlEnd, item) {
 function getTeamsForTable(newScrollPosition, urlEnd, item) {
     getItemsFromServer(newScrollPosition, displayItemsInTextAnd2ButtonTable,
         urlEnd, item, DIALOG_TEAM_MAINTENANCE, TEAM_LIST,
-        'Update', 'updateItemName(this, DIALOG_UPDATE_CLUB_TEAM_NAME, DIALOG_TEAM_MAINTENANCE)',
-        'Delete', 'deleteItem(this, DIALOG_DELETE_CLUB_TEAM, DIALOG_TEAM_MAINTENANCE)');
+        'Update', CLUB_TEAM_UPDATE_FUNCTION,
+        'Delete', CLUB_TEAM_DELETE_FUNCTION);
 }
 
 /**

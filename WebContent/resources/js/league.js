@@ -77,10 +77,41 @@ const LEAGUE_SELECTION_LIST = 'league-selection-list';
 const TEAM_SELECTION_LIST = 'team-selection-list';
 
 /**
- * Function to react to a checkbox click on the league selection table.
+ * Function assigned to update button on the league maintenance table.
+ */
+const LEAGUE_UPDATE_FUNCTION =
+    'updateItemName(this, DIALOG_UPDATE_ITEM_NAME, DIALOG_LEAGUE_MAINTENANCE)';
+
+/**
+ * Function assigned to delete button on the league maintenance table.
+ */
+const LEAGUE_DELETE_FUNCTION =
+    'deleteItem(this, DIALOG_DELETE_ITEM, DIALOG_LEAGUE_MAINTENANCE)';
+
+/**
+ * Function assigned to team button on the league maintenance table.
+ */
+const LEAGUE_TEAM_FUNCTION =
+    'maintainTeams(this, URL_LEAGUE_TEAM_START, DIALOG_LEAGUE_MAINTENANCE, ' +
+        'DIALOG_LEAGUE_TEAM_MAINTENANCE, LEAGUE_TEAM_LIST, setUpMaintainLeagueTeamForm)';
+
+/**
+ * Function assigned to remove button on the league team maintenance table.
+ */
+const LEAGUE_TEAM_REMOVE_FUNCTION =
+    'deleteItem(this, DIALOG_REMOVE_LEAGUE_TEAM, DIALOG_LEAGUE_TEAM_MAINTENANCE)';
+
+/**
+ * Function assigned to a checkbox click on the league selection table.
  */
 const LEAGUE_CHECKBOX_FUNCTION =
     'processLeagueSelection(this)';
+
+/**
+ * Function assigned to a checkbox click on the team selection table.
+ */
+const TEAM_CHECKBOX_FUNCTION =
+    'processTeamSelection(this)';
 
 /**
  * Row attribute to store the item id from the database.
@@ -97,12 +128,6 @@ const DATA_ROW_COUNT = 'data-row-count';
  * Used to select teams that are not associated to a league.
  */
 const NO_LEAGUE = 'No League';
-
-/**
- * Function to react to a checkbox click on the team selection table.
- */
-const TEAM_CHECKBOX_FUNCTION =
-    'processTeamSelection(this)';
 
 /**
  * Holds the Ids of the teams that have been selected in the team selection table.
@@ -224,13 +249,9 @@ function setUpMaintainLeagueDocument() {
 function getLeaguesForTable(newScrollPosition, urlEnd, item) {
     getItemsFromServer(newScrollPosition, displayItemsInTextAnd3ButtonTable,
         urlEnd, item, DIALOG_LEAGUE_MAINTENANCE, LEAGUE_LIST,
-        'Update', 'updateItemName(this, DIALOG_UPDATE_ITEM_NAME, ' +
-            'DIALOG_LEAGUE_MAINTENANCE)',
-        'Delete', 'deleteItem(this, DIALOG_DELETE_ITEM, DIALOG_LEAGUE_MAINTENANCE)',
-        'Team', 'maintainTeams(this, URL_LEAGUE_TEAM_START, ' +
-            'DIALOG_LEAGUE_MAINTENANCE, ' +
-            'DIALOG_LEAGUE_TEAM_MAINTENANCE, LEAGUE_TEAM_LIST, ' +
-            'setUpMaintainLeagueTeamForm)');
+        'Update', LEAGUE_UPDATE_FUNCTION,
+        'Delete', LEAGUE_DELETE_FUNCTION,
+        'Team', LEAGUE_TEAM_FUNCTION);
 }
 
 /**
@@ -240,8 +261,7 @@ function getLeaguesForTable(newScrollPosition, urlEnd, item) {
 function getLeagueTeamsForTable(newScrollPosition, urlEnd, item) {
     getItemsFromServer(newScrollPosition, displayItemsInTextAnd1ButtonTable,
         urlEnd, item, DIALOG_LEAGUE_TEAM_MAINTENANCE, LEAGUE_TEAM_LIST,
-        'Remove', 'deleteItem(this, ' +
-            'DIALOG_REMOVE_LEAGUE_TEAM, DIALOG_LEAGUE_TEAM_MAINTENANCE)');
+        'Remove', LEAGUE_TEAM_REMOVE_FUNCTION);
 }
 
 /**

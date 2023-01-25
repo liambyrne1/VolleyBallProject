@@ -104,6 +104,11 @@ tbody td:last-child, thead th:last-child {
   margin: 0;
   color: green;
 }
+
+#dialog-update-item-name section {
+  height: 35%;
+}
+
 #dialog-update-item-name footer,
 #dialog-create-item footer,
 #dialog-delete-item footer {
@@ -278,6 +283,11 @@ tbody td:last-child, thead th:last-child {
   margin: 0;
   color: green;
 }
+
+#dialog-update-club-team-name section {
+  height: 35%;
+}
+
 #dialog-update-club-team-name footer,
 #dialog-create-club-team footer,
 #dialog-delete-club-team footer {
