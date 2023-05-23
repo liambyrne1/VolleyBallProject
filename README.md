@@ -5,16 +5,22 @@ To implement a Volleyball league system.
 
 SYSTEM OVERVIEW
 
-For an overview of system
-please see VolleyBallProject/documentation/design/overview.docx
+For an overview of system please see:-
+https://github.com/liambyrne1/VolleyBallProject/documentation/design/overview.docx
 
 
 
-PROPERTY FILE
+SYSTEM ENVIRONMENT
 
-For property file set up,
-please see VolleyBallProject/documentation/properties/setup.docx
+To set up the system, all you need is a Java Environment, Gradle and a PostgreSQL database. For download see:-
+https://github.com/liambyrne1/VolleyBallProject/blob/master/documentation/general/Set Up Environment.docx
 
+
+
+SYSTEM EXECUTION
+
+A simple example is to move the three top teams from league 05 to league 04. See:-
+https://github.com/liambyrne1/VolleyBallProject/blob/master/documentation/general/System Execution.docx
 
 
 TO RUN THE GRADLE BUILD FILE build.gradle
@@ -29,55 +35,7 @@ TO BUILD WAR FILE
 
 >gradlew war --console=plain --info
 
-VolleyBallLeagueSystem.war is created in build/libs directory
+VolleyBallProject.war is created in build/libs directory
 
 
 
-TO RUN APP
-
-To load the database before running the app use one of the following scripts:-
-VolleyBallProject/database/InitVolleyballTest.sql
-VolleyBallProject/database/basicLeagueTest.sql
-
-To run the app:-
->gradlew appRun --console=plain --info
-
-Access web app at http://localhost:8080/VolleyBallLeagueSystem/maintainLeague.html
-
-
-
-TO RUN THE UNIT TESTS
-
-To run the Java unit test on a Windows system.
-Automatically loads the database with the
-VolleyBallLeagueSystem\database\InitVolleyballTest.sql script.
-
->gradlew testOnWindows --console=plain --info
-
-To run the Java unit test on a non Windows system.
-The database has to be first manually loaded with the sql script
-VolleyBallLeagueSystem\database\InitVolleyballTest.sql
-
->gradlew testNotOnWindows --console=plain --info
-
-Test results are located at build/reports/tests/test/index.html
-
-
-
-MOCHA
-
-The frontend is tested with Mocha.
-
-To set up and run the mocha unit tests,
-please see VolleyBallProject/documentation/mocha/setup/setup.docx
-
-For the mocha output,
-please see VolleyBallProject/documentation/mocha/output directory.
-
-
-
-TO TEST GITHUB SSH PROTOCOL
-
-TO TEST GITHUB SSH PROTOCOL TEST 2
-
-TO TEST GITHUB SSH PROTOCOL TEST 3

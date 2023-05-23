@@ -22,21 +22,21 @@ CREATE TABLE leagues (
     name VARCHAR(30) NOT NULL
 );
 
-INSERT INTO leagues (name) VALUES ('L01');
-INSERT INTO leagues (name) VALUES ('L02');
-INSERT INTO leagues (name) VALUES ('L03');
-INSERT INTO leagues (name) VALUES ('L04');
-INSERT INTO leagues (name) VALUES ('L05');
-INSERT INTO leagues (name) VALUES ('L06');
-INSERT INTO leagues (name) VALUES ('L07');
-INSERT INTO leagues (name) VALUES ('L08');
-INSERT INTO leagues (name) VALUES ('L09');
-INSERT INTO leagues (name) VALUES ('L10');
-INSERT INTO leagues (name) VALUES ('L11');
-INSERT INTO leagues (name) VALUES ('L12');
-INSERT INTO leagues (name) VALUES ('L13');
-INSERT INTO leagues (name) VALUES ('L14');
-INSERT INTO leagues (name) VALUES ('L15');
+INSERT INTO leagues (name) VALUES ('League 01');
+INSERT INTO leagues (name) VALUES ('League 02');
+INSERT INTO leagues (name) VALUES ('League 03');
+INSERT INTO leagues (name) VALUES ('League 04');
+INSERT INTO leagues (name) VALUES ('League 05');
+INSERT INTO leagues (name) VALUES ('League 06');
+INSERT INTO leagues (name) VALUES ('League 07');
+INSERT INTO leagues (name) VALUES ('League 08');
+INSERT INTO leagues (name) VALUES ('League 09');
+INSERT INTO leagues (name) VALUES ('League 10');
+INSERT INTO leagues (name) VALUES ('League 11');
+INSERT INTO leagues (name) VALUES ('League 12');
+INSERT INTO leagues (name) VALUES ('League 13');
+INSERT INTO leagues (name) VALUES ('League 14');
+INSERT INTO leagues (name) VALUES ('League 15');
 
 -------------------------------------------------------------------------
 -- Add table "Clubs"                                                  -
@@ -47,21 +47,21 @@ CREATE TABLE clubs (
     name VARCHAR(30) NOT NULL
 );
 
-INSERT INTO clubs (name) VALUES ('C01');
-INSERT INTO clubs (name) VALUES ('C02');
-INSERT INTO clubs (name) VALUES ('C03');
-INSERT INTO clubs (name) VALUES ('C04');
-INSERT INTO clubs (name) VALUES ('C05');
-INSERT INTO clubs (name) VALUES ('C06');
-INSERT INTO clubs (name) VALUES ('C07');
-INSERT INTO clubs (name) VALUES ('C08');
-INSERT INTO clubs (name) VALUES ('C09');
-INSERT INTO clubs (name) VALUES ('C10');
-INSERT INTO clubs (name) VALUES ('C11');
-INSERT INTO clubs (name) VALUES ('C12');
-INSERT INTO clubs (name) VALUES ('C13');
-INSERT INTO clubs (name) VALUES ('C14');
-INSERT INTO clubs (name) VALUES ('C15');
+INSERT INTO clubs (name) VALUES ('Club 01');
+INSERT INTO clubs (name) VALUES ('Club 02');
+INSERT INTO clubs (name) VALUES ('Club 03');
+INSERT INTO clubs (name) VALUES ('Club 04');
+INSERT INTO clubs (name) VALUES ('Club 05');
+INSERT INTO clubs (name) VALUES ('Club 06');
+INSERT INTO clubs (name) VALUES ('Club 07');
+INSERT INTO clubs (name) VALUES ('Club 08');
+INSERT INTO clubs (name) VALUES ('Club 09');
+INSERT INTO clubs (name) VALUES ('Club 10');
+INSERT INTO clubs (name) VALUES ('Club 11');
+INSERT INTO clubs (name) VALUES ('Club 12');
+INSERT INTO clubs (name) VALUES ('Club 13');
+INSERT INTO clubs (name) VALUES ('Club 14');
+INSERT INTO clubs (name) VALUES ('Club 15');
 
 -------------------------------------------------------------------------
 -- Add table "Teams"                                                  -
@@ -82,45 +82,45 @@ CREATE TABLE teams (
         REFERENCES leagues (id)
 );
 
-INSERT INTO teams (name, club_id) VALUES ('T101', 1);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T102', 1, 1);
+INSERT INTO teams (name, club_id) VALUES ('Team 101', 1);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 102', 1, 1);
 
-INSERT INTO teams (name, club_id) VALUES ('T201', 2);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T202', 2, 2);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T203', 2, 2);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T204', 2, 2);
+INSERT INTO teams (name, club_id) VALUES ('Team 201', 2);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 202', 2, 2);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 203', 2, 2);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 204', 2, 2);
 
-INSERT INTO teams (name, club_id) VALUES ('T301', 3);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T302', 3, 3);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T303', 3, 3);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T304', 3, 3);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T305', 3, 3);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T306', 3, 3);
+INSERT INTO teams (name, club_id) VALUES ('Team 301', 3);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 302', 3, 3);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 303', 3, 3);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 304', 3, 3);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 305', 3, 3);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 306', 3, 3);
 
-INSERT INTO teams (name, club_id) VALUES ('T401', 4);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T402', 4, 4);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T403', 4, 4);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T404', 4, 4);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T405', 4, 4);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T406', 4, 4);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T407', 4, 4);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T408', 4, 4);
+INSERT INTO teams (name, club_id) VALUES ('Team 401', 4);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 402', 4, 4);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 403', 4, 4);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 404', 4, 4);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 405', 4, 4);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 406', 4, 4);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 407', 4, 4);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 408', 4, 4);
 
-INSERT INTO teams (name, club_id) VALUES ('T501', 5);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T502', 5, 5);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T503', 5, 5);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T504', 5, 5);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T505', 5, 5);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T506', 5, 5);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T507', 5, 5);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T508', 5, 5);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T509', 5, 5);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T510', 5, 5);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T511', 5, 5);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T512', 5, 5);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T513', 5, 5);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T514', 5, 5);
-INSERT INTO teams (name, club_id, league_id) VALUES ('T515', 5, 5);
+INSERT INTO teams (name, club_id) VALUES ('Team 501', 5);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 502', 5, 5);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 503', 5, 5);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 504', 5, 5);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 505', 5, 5);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 506', 5, 5);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 507', 5, 5);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 508', 5, 5);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 509', 5, 5);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 510', 5, 5);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 511', 5, 5);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 512', 5, 5);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 513', 5, 5);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 514', 5, 5);
+INSERT INTO teams (name, club_id, league_id) VALUES ('Team 515', 5, 5);
 
 -------------------------------------------------------------------------
 -- Add table "users"                                                  -
